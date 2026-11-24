@@ -1,0 +1,3185 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPE II Master · Estudio Express Unidades 5 y 6</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Utilidades personalizadas para efecto 3D en Flashcards y scrollbars */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col">
+
+  <!-- Barra de Navegación Superior -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-3">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('temario')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-emerald-500 flex items-center justify-center text-white font-extrabold text-lg shadow-lg shadow-indigo-500/20">
+            IPE
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-base sm:text-lg tracking-tight">IPE II Master</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                U5 &amp; U6
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Plan de choque para aprobar mañana</p>
+          </div>
+        </div>
+
+        <!-- Navegación Desktop -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200/70 dark:border-slate-800">
+          <button data-tab="temario" onclick="switchTab('temario')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+            <span>📚</span> Temario
+          </button>
+          <button data-tab="tests" onclick="switchTab('tests')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+            <span>🎯</span> Tests por Puntos
+          </button>
+          <button data-tab="simulacros" onclick="switchTab('simulacros')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+            <span>📝</span> Exámenes (30 preg.)
+          </button>
+          <button data-tab="extra" onclick="switchTab('extra')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+            <span>⚡</span> Repaso Express
+          </button>
+          <button data-tab="fallos" onclick="switchTab('fallos')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 relative">
+            <span>🔥</span> Mis Fallos
+            <span id="badge-fallos-desktop" class="hidden px-1.5 py-0.2 text-xs font-bold rounded-full bg-rose-500 text-white">0</span>
+          </button>
+        </nav>
+
+        <!-- Acciones derecha -->
+        <div class="flex items-center gap-2">
+          <!-- Indicador de progreso rápido -->
+          <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+            <span class="text-slate-500 dark:text-slate-400">Dominadas:</span>
+            <span id="header-mastered-count" class="font-bold text-emerald-600 dark:text-emerald-400">0/105</span>
+          </div>
+          <!-- Botón Tema -->
+          <button onclick="toggleTheme()" title="Cambiar tema claro/oscuro" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors">
+            <span id="theme-icon">☀️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegación Móvil -->
+      <div class="flex md:hidden overflow-x-auto gap-1.5 pb-2.5 no-scrollbar">
+        <button data-tab="temario" onclick="switchTab('temario')" class="nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">📚 Temario</button>
+        <button data-tab="tests" onclick="switchTab('tests')" class="nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">🎯 Tests Puntos</button>
+        <button data-tab="simulacros" onclick="switchTab('simulacros')" class="nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">📝 Exámenes 30</button>
+        <button data-tab="extra" onclick="switchTab('extra')" class="nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">⚡ Express</button>
+        <button data-tab="fallos" onclick="switchTab('fallos')" class="nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
+          🔥 Fallos <span id="badge-fallos-mob" class="hidden px-1.5 rounded-full bg-rose-500 text-white text-[10px]">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner de Estado / Toast Notifications -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- ==================== SECCIÓN 1: TEMARIO DE REPASO ==================== -->
+    <section id="view-temario" class="view-section animate-fade-in space-y-6">
+      <!-- Cabecera y selector de Unidad -->
+      <div class="bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-emerald-600/10 dark:from-indigo-500/15 dark:via-purple-500/10 dark:to-emerald-500/15 border border-indigo-500/20 rounded-2xl p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Temario Completo de Repaso</h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
+            Esquemas visuales y conceptos clave extraídos punto por punto de las diapositivas de clase. Marca cada punto como estudiado.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 shrink-0">
+          <button onclick="filterTemario('all')" id="btn-unit-all" class="unit-filter-btn px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-sm">Todas</button>
+          <button onclick="filterTemario('u5')" id="btn-unit-u5" class="unit-filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500">Unidad 5</button>
+          <button onclick="filterTemario('u6')" id="btn-unit-u6" class="unit-filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500">Unidad 6</button>
+        </div>
+      </div>
+
+      <!-- Barra de progreso de lectura -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold text-lg">✓</div>
+          <div>
+            <p class="text-sm font-bold">Progreso de lectura del temario</p>
+            <p id="study-progress-text" class="text-xs text-slate-500 dark:text-slate-400">0 de 7 puntos marcados como repasados</p>
+          </div>
+        </div>
+        <div class="w-full sm:w-64 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+          <div id="study-progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Contenedor Dinámico de Unidades -->
+      <div id="temario-content" class="space-y-10"></div>
+    </section>
+
+    <!-- ==================== SECCIÓN 2: TESTS POR UNIDADES Y PUNTOS ==================== -->
+    <section id="view-tests" class="view-section hidden animate-fade-in space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+        <h2 class="text-2xl font-extrabold">Tests por Unidades y Puntos</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          Practica punto por punto con corrección inmediata y explicación detallada de cada respuesta.
+        </p>
+
+        <!-- Selector de tema -->
+        <div id="topic-selector-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          <!-- Unidad 5 -->
+          <div class="rounded-2xl border border-indigo-500/30 bg-indigo-500/5 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-500">Unidad 5</span>
+              <button onclick="startTopicQuiz('U5_ALL')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                Test U5 Completa (20 preg.)
+              </button>
+            </div>
+            <h3 class="font-bold text-base">Aproximación al mundo empresarial</h3>
+            <div class="grid grid-cols-1 gap-2 pt-1">
+              <button onclick="startTopicQuiz('U5.1')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-indigo-500 block">Punto 5.1</span>
+                  <span class="text-sm font-semibold">El Pensamiento Inverso y Caso Nokia vs Waze</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U5.1">15 preg.</span>
+              </button>
+              <button onclick="startTopicQuiz('U5.2')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-indigo-500 block">Punto 5.2</span>
+                  <span class="text-sm font-semibold">Mercado, Empresa como Sistema, Organigrama y Cultura</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U5.2">15 preg.</span>
+              </button>
+              <button onclick="startTopicQuiz('U5.3')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-indigo-500 block">Punto 5.3</span>
+                  <span class="text-sm font-semibold">El Entorno: Microentorno, 5 Fuerzas de Porter y PESTEL</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U5.3">15 preg.</span>
+              </button>
+              <button onclick="startTopicQuiz('U5.4')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-indigo-500 block">Punto 5.4</span>
+                  <span class="text-sm font-semibold">Economía del Bien Común (Matriz 5.0) y Economía Social</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U5.4">12 preg.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Unidad 6 -->
+          <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-500">Unidad 6</span>
+              <button onclick="startTopicQuiz('U6_ALL')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                Test U6 Completa (20 preg.)
+              </button>
+            </div>
+            <h3 class="font-bold text-base">Oportunidades de negocio y Design Thinking</h3>
+            <div class="grid grid-cols-1 gap-2 pt-1">
+              <button onclick="startTopicQuiz('U6.1')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-emerald-500 block">Punto 6.1</span>
+                  <span class="text-sm font-semibold">Design Thinking: Las 5 Fases y Herramientas Clave</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U6.1">18 preg.</span>
+              </button>
+              <button onclick="startTopicQuiz('U6.2')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-emerald-500 block">Punto 6.2</span>
+                  <span class="text-sm font-semibold">Tendencias (Econ., Tec., Soc.), Valor y Oportunidades</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U6.2">15 preg.</span>
+              </button>
+              <button onclick="startTopicQuiz('U6.3')" class="topic-btn text-left p-3 rounded-xl bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between transition">
+                <div>
+                  <span class="text-xs font-bold text-emerald-500 block">Punto 6.3</span>
+                  <span class="text-sm font-semibold">Mercado Meta, Segmentación y Estrategias de Cobertura</span>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800" id="count-U6.3">15 preg.</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zona Activa del Test por Puntos -->
+      <div id="topic-quiz-arena" class="hidden"></div>
+    </section>
+
+    <!-- ==================== SECCIÓN 3: SIMULACROS DE EXAMEN DE 30 PREGUNTAS ==================== -->
+    <section id="view-simulacros" class="view-section hidden animate-fade-in space-y-6">
+      <div id="exam-lobby" class="space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">Simulacro Oficial · 30 Preguntas</span>
+              <h2 class="text-2xl font-extrabold mt-2">Exámenes Tipo Test de 30 Preguntas</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                Pon a prueba tu nivel real para mañana. Cada examen contiene 30 preguntas equilibradas entre la Unidad 5 y la Unidad 6, con nota sobre 10 y diagnóstico por temas.
+              </p>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shrink-0">
+              <label for="exam-timer-select" class="text-xs font-bold text-slate-600 dark:text-slate-300">Temporizador:</label>
+              <select id="exam-timer-select" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold">
+                <option value="0">Sin límite de tiempo</option>
+                <option value="30" selected>30 minutos (Estándar)</option>
+                <option value="45">45 minutos (Tranquilo)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tarjetas de Modelos de Examen -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            <!-- Examen 1 -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-5 flex flex-col justify-between hover:border-indigo-500 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-indigo-500 uppercase">Modelo 1</span>
+                  <span id="score-exam-1" class="text-xs font-bold text-slate-400">Sin realizar</span>
+                </div>
+                <h3 class="font-bold text-lg mt-1">Examen Global A</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                  Enfoque equilibrado: Pensamiento Inverso, Departamentos, PESTEL, Porter, Fases DT y Segmentación.
+                </p>
+              </div>
+              <button onclick="startMockExam(1)" class="mt-5 w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition shadow-sm">
+                Empezar Examen 1
+              </button>
+            </div>
+
+            <!-- Examen 2 -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-5 flex flex-col justify-between hover:border-emerald-500 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-emerald-500 uppercase">Modelo 2</span>
+                  <span id="score-exam-2" class="text-xs font-bold text-slate-400">Sin realizar</span>
+                </div>
+                <h3 class="font-bold text-lg mt-1">Examen Global B</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                  Casos prácticos y conceptos trampa: Nokia/Waze, Matriz Bien Común 5.0, Mapa Empatía, Journey Map y Tendencias.
+                </p>
+              </div>
+              <button onclick="startMockExam(2)" class="mt-5 w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold transition shadow-sm">
+                Empezar Examen 2
+              </button>
+            </div>
+
+            <!-- Examen 3 -->
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-5 flex flex-col justify-between hover:border-purple-500 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-purple-500 uppercase">Modelo 3</span>
+                  <span id="score-exam-3" class="text-xs font-bold text-slate-400">Sin realizar</span>
+                </div>
+                <h3 class="font-bold text-lg mt-1">Examen Global C</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                  Nivel avanzado: Organigramas, Economía Social, Estrategias competitivas, Valor y Cobertura de mercado.
+                </p>
+              </div>
+              <button onclick="startMockExam(3)" class="mt-5 w-full py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold transition shadow-sm">
+                Empezar Examen 3
+              </button>
+            </div>
+
+            <!-- Examen Aleatorio -->
+            <div class="rounded-2xl border-2 border-dashed border-amber-500/40 bg-amber-500/5 p-5 flex flex-col justify-between hover:border-amber-500 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-amber-500 uppercase">Infinito</span>
+                  <span class="text-xs font-bold text-amber-500">🎲 Mezcla</span>
+                </div>
+                <h3 class="font-bold text-lg mt-1">Examen Aleatorio</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                  Genera al instante un nuevo examen de 30 preguntas únicas seleccionadas al azar de todo el banco de 105 preguntas.
+                </p>
+              </div>
+              <button onclick="startMockExam('random')" class="mt-5 w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold transition shadow-sm">
+                Generar Aleatorio
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arena del Examen de 30 Preguntas -->
+      <div id="exam-arena" class="hidden"></div>
+    </section>
+
+    <!-- ==================== SECCIÓN 4: REPASO EXPRESS (FLASHCARDS, COMPARATIVAS Y GLOSARIO) ==================== -->
+    <section id="view-extra" class="view-section hidden animate-fade-in space-y-6">
+      <!-- Sub-navegación Repaso Express -->
+      <div class="flex flex-wrap gap-2 bg-white dark:bg-slate-900 p-2 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <button onclick="switchExtraSub('flashcards')" id="sub-btn-flashcards" class="extra-sub-btn px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white">
+          🃏 Flashcards (Tarjetas 3D)
+        </button>
+        <button onclick="switchExtraSub('comparativas')" id="sub-btn-comparativas" class="extra-sub-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          🧠 Chuleta Anti-Trampas (Comparativas)
+        </button>
+        <button onclick="switchExtraSub('glosario')" id="sub-btn-glosario" class="extra-sub-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          🔍 Glosario Buscador
+        </button>
+      </div>
+
+      <!-- Subvista: Flashcards -->
+      <div id="extra-flashcards" class="space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h3 class="text-xl font-extrabold">Tarjetas de Memoria Activa (Flashcards)</h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Haz clic en la tarjeta para girarla y comprobar si te sabes el concepto.</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="filterFlashcards('ALL')" id="fc-filter-ALL" class="fc-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white">Todas</button>
+              <button onclick="filterFlashcards('U5')" id="fc-filter-U5" class="fc-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800">Unidad 5</button>
+              <button onclick="filterFlashcards('U6')" id="fc-filter-U6" class="fc-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800">Unidad 6</button>
+            </div>
+          </div>
+
+          <!-- Tarjeta 3D -->
+          <div class="max-w-2xl mx-auto">
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+              <span id="fc-counter">Tarjeta 1 de 24</span>
+              <span id="fc-tag" class="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 font-bold">Unidad 5</span>
+            </div>
+
+            <div onclick="flipFlashcard()" class="perspective-1000 w-full h-64 sm:h-72 cursor-pointer select-none">
+              <div id="flashcard-inner" class="relative w-full h-full transition-transform duration-500 transform-style-3d">
+                <!-- Cara Frontal -->
+                <div class="absolute inset-0 backface-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 border-2 border-indigo-500/40 text-white p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-xl">
+                  <span class="text-xs uppercase tracking-widest text-indigo-400 font-bold mb-3">Pregunta / Concepto</span>
+                  <p id="fc-front-text" class="text-lg sm:text-2xl font-bold leading-snug"></p>
+                  <span class="mt-6 text-xs text-slate-400 flex items-center gap-1">👆 Toca para ver la respuesta</span>
+                </div>
+                <!-- Cara Trasera -->
+                <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl bg-gradient-to-br from-emerald-900 to-slate-900 border-2 border-emerald-500/50 text-white p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-xl">
+                  <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold mb-3">Respuesta Clave</span>
+                  <p id="fc-back-text" class="text-sm sm:text-lg font-medium leading-relaxed"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controles Flashcard -->
+            <div class="flex items-center justify-between gap-3 mt-5">
+              <button onclick="prevFlashcard()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-sm font-bold transition">
+                ← Anterior
+              </button>
+              <button onclick="shuffleFlashcards()" class="px-4 py-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25 text-sm font-bold transition">
+                🔀 Mezclar
+              </button>
+              <button onclick="nextFlashcard()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">
+                Siguiente →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subvista: Chuleta Comparativas Anti-Trampas -->
+      <div id="extra-comparativas" class="hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 space-y-6">
+          <div>
+            <h3 class="text-xl font-extrabold">Chuleta Anti-Trampas de Examen</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Las diferencias exactas entre conceptos parecidos donde más se falla en el test.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Tabla 1: Pensamiento Tradicional vs Inverso -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-indigo-600 text-white px-4 py-2.5 font-bold text-sm">1. Modelo Tradicional vs. Pensamiento Inverso (U5.1)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong class="text-rose-500">Tradicional:</strong> Idea → Elaboración → Ejecución → Buscar clientes. <em>Riesgo:</em> gastar mucho tiempo/dinero en algo que nadie necesita.</p>
+                <p><strong class="text-emerald-500">Pensamiento Inverso:</strong> Parte del <u>resultado/meta deseada</u> (la necesidad real del cliente) y trabaja hacia atrás para construir el producto. Ejemplo: <strong>Waze</strong> (usó GPS gratuito de usuarios) vs <strong>Nokia</strong> (gastó 8,1M$ en sensores caros).</p>
+              </div>
+            </div>
+
+            <!-- Tabla 2: Microentorno vs Macroentorno -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-indigo-600 text-white px-4 py-2.5 font-bold text-sm">2. Microentorno (Porter) vs. Macroentorno (PESTEL) (U5.3)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong class="text-indigo-400">Microentorno (Específico):</strong> Afecta directamente al sector de la empresa. Incluye <strong>Competencia, Clientes, Proveedores, Intermediarios y Productos Sustitutivos</strong>. Se analiza con las <strong>5 Fuerzas de Porter</strong>.</p>
+                <p><strong class="text-emerald-400">Macroentorno (General):</strong> Afecta a todas las empresas por igual y no se puede controlar. Se analiza con <strong>PESTEL</strong> (Político, Económico, Social, Tecnológico, Ecológico, Legal).</p>
+              </div>
+            </div>
+
+            <!-- Tabla 3: Herramientas Design Thinking -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-emerald-600 text-white px-4 py-2.5 font-bold text-sm">3. Mapa de Empatía vs. Journey Map vs. Storyboard (U6.1)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong>Mapa de Empatía:</strong> Analiza la mente/entorno del usuario (qué piensa/siente, oye, ve, dice/hace, esfuerzos y resultados).</p>
+                <p><strong>Journey Map:</strong> Visualiza la <u>experiencia paso a paso</u> del cliente en un proceso (puntos positivos y puntos negativos/STOP).</p>
+                <p><strong>Storyboard:</strong> Viñetas tipo cómic que muestran cómo impacta la solución en la vida del usuario.</p>
+              </div>
+            </div>
+
+            <!-- Tabla 4: Estrategias de Segmentación -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-emerald-600 text-white px-4 py-2.5 font-bold text-sm">4. Estrategias de Selección del Mercado Meta (U6.3)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong>Concentración:</strong> La empresa elige <u>1 solo segmento</u> específico y concentra ahí todos sus recursos (ideal para pymes).</p>
+                <p><strong>Diferenciación:</strong> Atiende a <u>varios segmentos</u> diseñando una oferta/producto adaptado a cada uno.</p>
+                <p><strong>Indiferenciada:</strong> Se dirige a <u>todo el mercado por igual</u> con una única oferta sin distinguir segmentos.</p>
+              </div>
+            </div>
+
+            <!-- Tabla 5: Departamentos vs Organigramas -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-purple-600 text-white px-4 py-2.5 font-bold text-sm">5. Los 5 Departamentos y Tipos de Organigrama (U5.2)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong>Departamentos:</strong> <em>Producción</em> (transforma materia prima), <em>Ventas</em> (comercial), <em>Finanzas</em> (recursos económicos), <em>RRHH</em> (personal), <em>Administración</em> (planificar, organizar, ejecutar y controlar).</p>
+                <p><strong>Organigramas:</strong> <em>Vertical</em> (de arriba abajo), <em>Horizontal</em> (de izquierda a derecha), <em>Circular</em> (CEO en el centro), <em>Funcional</em> (según funciones).</p>
+              </div>
+            </div>
+
+            <!-- Tabla 6: Matriz Bien Común 5.0 vs Economía Social -->
+            <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="bg-purple-600 text-white px-4 py-2.5 font-bold text-sm">6. Matriz Bien Común 5.0 vs. Economía Social (U5.4)</div>
+              <div class="p-4 text-xs sm:text-sm space-y-2 bg-slate-50/50 dark:bg-slate-950/40">
+                <p><strong>Matriz 5.0:</strong> Cruza <strong>5 Grupos de Interés</strong> (A. Proveedores, B. Propietarios/Financieros, C. Trabajadores, D. Clientes/Otras empresas, E. Entorno social) con <strong>4 Valores</strong> (Dignidad humana, Solidaridad/Justicia, Sostenibilidad medioambiental, Transparencia/Participación).</p>
+                <p><strong>6 Principios Economía Social:</strong> Equidad, Trabajo digno, Sostenibilidad ecológica, Cooperación, Reparto de la riqueza y Compromiso con el entorno.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subvista: Glosario Buscador -->
+      <div id="extra-glosario" class="hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-extrabold">Glosario Rápido IPE II</h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Busca cualquier término de las Unidades 5 y 6 al instante.</p>
+            </div>
+            <input type="text" id="glossary-search" oninput="renderGlossary()" placeholder="Buscar término (ej: Porter, Waze, Empatía...)" class="w-full sm:w-80 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div id="glossary-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 5: MIS FALLOS (REPASO INTELIGENTE) ==================== -->
+    <section id="view-fallos" class="view-section hidden animate-fade-in space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold flex items-center gap-2">🔥 Cuaderno de Preguntas Falladas</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+              Aquí se guardan automáticamente todas las preguntas que falles en los tests o simulacros. Cuando las aciertes en este modo, desaparecerán de la lista.
+            </p>
+          </div>
+          <div id="fallos-actions" class="flex gap-2"></div>
+        </div>
+
+        <div id="fallos-content" class="mt-6"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pie de página -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-5 text-center text-xs text-slate-500 dark:text-slate-400">
+    IPE II · Unidades 5 y 6 · Material interactivo de preparación intensiva para el examen. ¡Mucho ánimo mañana! 🚀
+  </footer>
+
+  <!-- ==================== JAVASCRIPT COMPLETO ==================== -->
+  <script>
+    // =========================================================================
+    // 1. DATOS ESTRUCTURADOS DEL TEMARIO (UNIDADES 5 Y 6)
+    // =========================================================================
+    const TEMARIO_DATA = [
+      {
+        id: "U5.1",
+        unit: "u5",
+        unitTitle: "UNIDAD 5: Aproximación al mundo empresarial",
+        badgeColor: "indigo",
+        title: "5.1. El Pensamiento Inverso como base del éxito empresarial",
+        summary: "Cómo evitar fracasar al emprender partiendo desde la necesidad real del cliente hacia atrás.",
+        blocks: [
+          {
+            heading: "Las 4 Etapas del Modelo Tradicional y sus problemas",
+            type: "list",
+            items: [
+              "<strong>1. Definición de la idea de negocio.</strong>",
+              "<strong>2. Elaboración conceptual</strong> de esa idea, buscando clarificar todos sus aspectos.",
+              "<strong>3. Ejecución o puesta en marcha.</strong>",
+              "<strong>4. Búsqueda de clientes.</strong>",
+              "⚠️ <strong>Problemas del modelo tradicional:</strong> Exige una <em>gran inversión económica y de tiempo</em> antes de saber si funciona, y existe un alto riesgo de que <em>la idea no solucione o satisfaga una necesidad real</em>."
+            ]
+          },
+          {
+            heading: "¿Qué es el Pensamiento Inverso Empresarial?",
+            type: "highlight",
+            text: "Es un enfoque creativo y estratégico que consiste en abordar un problema o desafío <strong>comenzando desde el resultado o meta deseada</strong> (la necesidad real del mercado) y trabajando hacia atrás para identificar los pasos necesarios."
+          },
+          {
+            heading: "Las 4 Fases del Pensamiento Inverso",
+            type: "steps",
+            items: [
+              { title: "1. Identificar el problema o necesidad", desc: "Ser realistas con el problema o necesidad que tienen las personas." },
+              { title: "2. Construir el producto o servicio", desc: "Adaptar el producto directamente a las exigencias reales de la clientela." },
+              { title: "3. Evaluar la viabilidad de las ideas", desc: "Anotar y organizar las ideas generadas, combinar enfoques inversos y convencionales, y evaluar ventajas y desventajas." },
+              { title: "4. Selección de ideas más factibles", desc: "Elegir aquellas soluciones que sean técnica y económicamente viables." }
+            ]
+          },
+          {
+            heading: "4 Ventajas del Pensamiento Inverso",
+            type: "grid4",
+            items: [
+              { title: "Claridad en los objetivos", desc: "Enfoque con metas específicas y dirección clara para guiar recursos y esfuerzos." },
+              { title: "Anticipación de obstáculos", desc: "Identificación temprana de problemas y diseño de estrategias preventivas." },
+              { title: "Enfoque creativo e innovador", desc: "Ruptura con esquemas tradicionales y generación de nuevas oportunidades." },
+              { title: "Distribución eficiente de recursos", desc: "Optimizar tiempo y dinero enfocándose directamente en el logro final." }
+            ]
+          },
+          {
+            heading: "Caso Práctico Clave: Nokia vs. Waze (2007)",
+            type: "case",
+            text: "En 2007, <strong>Nokia</strong> invirtió más de <strong>8,1 millones de dólares</strong> en sensores físicos de tráfico buscando dominar la navegación en tiempo real (tecnología costosa y compleja). Sin embargo, la startup <strong>Waze</strong> la superó con pensamiento inverso: aprovechó gratuitamente los <strong>sensores GPS de los teléfonos de los propios usuarios</strong> para obtener datos en tiempo real, logrando una solución accesible y adaptada al mercado."
+          }
+        ]
+      },
+      {
+        id: "U5.2",
+        unit: "u5",
+        unitTitle: "UNIDAD 5: Aproximación al mundo empresarial",
+        badgeColor: "indigo",
+        title: "5.2. La empresa y su funcionamiento",
+        summary: "El mercado, el equilibrio entre oferta y demanda, la empresa como sistema, organigramas y cultura.",
+        blocks: [
+          {
+            heading: "¿Cómo funciona el Mercado?",
+            type: "list",
+            items: [
+              "<strong>Mercado:</strong> Espacio de intercambio, <em>físico o virtual</em>, donde compradores y vendedores interactúan para intercambiar bienes, servicios o recursos.",
+              "<strong>Precio de equilibrio:</strong> Punto en el que se igualan la <strong>Oferta</strong> y la <strong>Demanda</strong>, regulando el entorno económico."
+            ]
+          },
+          {
+            heading: "La Empresa como Sistema Abierto",
+            type: "list",
+            items: [
+              "<strong>Sistema:</strong> Conjunto de elementos interrelacionados diseñados para alcanzar un objetivo.",
+              "<strong>Sistema abierto:</strong> Se relaciona con el entorno; todo lo que ocurre fuera le afecta e influye en sus decisiones.",
+              "<strong>Sinergias:</strong> Está formado por subsistemas (departamentos) que actúan entre sí mejorando los resultados globales.",
+              "<strong>Autocontrol:</strong> Capacidad de autorregularse y adaptarse a los cambios coyunturales."
+            ]
+          },
+          {
+            heading: "Los 5 Departamentos de la Empresa",
+            type: "grid5",
+            items: [
+              { title: "Producción", desc: "Transforma la materia prima en productos o servicios." },
+              { title: "Ventas", desc: "Realiza las funciones comerciales y de distribución." },
+              { title: "Finanzas", desc: "Gestiona los recursos económicos y financieros." },
+              { title: "Recursos Humanos", desc: "Se encarga de la gestión y selección del personal." },
+              { title: "Administración", desc: "Planificar, organizar, ejecutar y controlar." }
+            ]
+          },
+          {
+            heading: "Organigrama y Cultura Empresarial",
+            type: "list",
+            items: [
+              "<strong>Organigrama:</strong> Representación gráfica de la empresa que muestra su <em>jerarquía</em>, las relaciones de dependencia, los canales de comunicación y la atribución de competencias. <strong>Tipos:</strong> <em>Funcional, Horizontal, Vertical y Circular</em>.",
+              "<strong>Cultura empresarial:</strong> Conjunto de valores, creencias, normas, comportamientos, símbolos y tradiciones que definen la identidad interna de la empresa.",
+              "<strong>Imagen corporativa:</strong> Proyección exterior de la cultura (cómo nos ven en el mercado). Se compone de 6 elementos visuales: <em>1. Nombre de la empresa, 2. Logotipo, 3. Eslogan, 4. Colores, 5. Página web y 6. Papelería</em>."
+            ]
+          }
+        ]
+      },
+      {
+        id: "U5.3",
+        unit: "u5",
+        unitTitle: "UNIDAD 5: Aproximación al mundo empresarial",
+        badgeColor: "indigo",
+        title: "5.3. El entorno de la empresa (Micro y Macroentorno)",
+        summary: "Factores externos que influyen en la estrategia: 5 Fuerzas de Porter y Análisis PESTEL.",
+        blocks: [
+          {
+            heading: "Microentorno (Entorno Específico)",
+            type: "list",
+            items: [
+              "<strong>Competencia (actual y futura) y Productos Sustitutivos:</strong> Los productos sustitutivos cubren la misma necesidad aunque sean diferentes (ej. café en casa frente a cafetería). <strong>Estrategias competitivas:</strong> <em>Diferenciación del producto, Liderazgo en costes y Segmentación de la clientela</em>.",
+              "<strong>Proveedores y Clientela:</strong> Los proveedores suministran materias primas (importan plazos de entrega, márgenes y calidad). Los clientes condicionan la estrategia según su demanda.",
+              "<strong>Intermediarios:</strong> Conectan a la empresa con los clientes finales (minoristas, distribuidores, agentes logísticos) e influyen en costes y márgenes."
+            ]
+          },
+          {
+            heading: "Las 5 Fuerzas de Porter (Análisis del Microentorno)",
+            type: "grid5",
+            items: [
+              { title: "1. Nuevos competidores", desc: "Amenaza de entrada de nuevas empresas al sector." },
+              { title: "2. Poder de clientes", desc: "Capacidad de negociación de los compradores sobre precios/calidad." },
+              { title: "3. Productos sustitutivos", desc: "Amenaza de alternativas que satisfacen la misma necesidad." },
+              { title: "4. Poder de proveedores", desc: "Capacidad de los suministradores para imponer precios o plazos." },
+              { title: "5. Rivalidad existente", desc: "Grado de competencia entre las empresas actuales del sector." }
+            ]
+          },
+          {
+            heading: "Macroentorno (Entorno General) y Análisis PESTEL",
+            type: "list",
+            items: [
+              "<strong>P - Político:</strong> Gobierno, clima político, conflictos, iniciativas y ayudas/subvenciones.",
+              "<strong>E - Económico:</strong> Tendencias, crisis, ciclos económicos, inflación, tipos de cambio y tipos de interés.",
+              "<strong>S - Social / Sociocultural:</strong> Demografía, estilo de vida, actitudes, aspectos éticos, nivel educativo y patrones culturales.",
+              "<strong>T - Tecnológico:</strong> TIC, patentes, acceso tecnológico, infraestructuras e investigación/innovación.",
+              "<strong>E - Ecológico / Medioambiental:</strong> Cambio climático, problemas medioambientales, sostenibilidad y conciencia ecológica.",
+              "<strong>L - Legal:</strong> Legislación laboral, reglamentación nacional, decretos locales, impuestos y regulación de precios. <em>(También se consideran factores Internacionales como la globalización)</em>.",
+              "🔗 <strong>Relación con DAFO:</strong> El análisis PESTEL y Porter permiten detectar las <strong>Amenazas y Oportunidades</strong> (análisis externo) del DAFO."
+            ]
+          }
+        ]
+      },
+      {
+        id: "U5.4",
+        unit: "u5",
+        unitTitle: "UNIDAD 5: Aproximación al mundo empresarial",
+        badgeColor: "indigo",
+        title: "5.4. Economía del Bien Común y Economía Social y Solidaria",
+        summary: "Modelos económicos centrados en las personas, la ética, la democracia y la sostenibilidad.",
+        blocks: [
+          {
+            heading: "Matriz del Bien Común 5.0",
+            type: "highlight",
+            text: "Herramienta que mide el impacto social y ético de una empresa cruzando <strong>5 Grupos de Interés</strong> (A: Proveedores, B: Propietarios y proveedores financieros, C: Trabajadores, D: Clientes y otras empresas, E: Entorno social) con <strong>4 Valores fundamentales</strong>: 1) Dignidad humana, 2) Solidaridad y justicia, 3) Sostenibilidad medioambiental, 4) Transparencia y participación democrática."
+          },
+          {
+            heading: "Los 6 Principios de la Economía Social y Solidaria",
+            type: "list",
+            items: [
+              "<strong>1. Equidad:</strong> Promueve la igualdad de oportunidades y derechos para todas las personas.",
+              "<strong>2. Trabajo digno:</strong> Garantiza empleo con justicia, respeto y condiciones humanas.",
+              "<strong>3. Sostenibilidad ecológica:</strong> Busca el desarrollo sin dañar el medio ambiente.",
+              "<strong>4. Cooperación:</strong> Fomenta el trabajo conjunto y la ayuda mutua en lugar de la competencia.",
+              "<strong>5. Reparto de la riqueza:</strong> Distribuye los beneficios de forma justa y solidaria.",
+              "<strong>6. Compromiso con el entorno:</strong> Impulsa el desarrollo local y la responsabilidad con la comunidad."
+            ]
+          }
+        ]
+      },
+      {
+        id: "U6.1",
+        unit: "u6",
+        unitTitle: "UNIDAD 6: Buscando oportunidades de negocio con Design Thinking",
+        badgeColor: "emerald",
+        title: "6.1. El Design Thinking: Fases y Herramientas Clave",
+        summary: "Metodología centrada en las personas para resolver problemas complejos de forma creativa.",
+        blocks: [
+          {
+            heading: "Definición y Ámbitos de Aplicación",
+            type: "list",
+            items: [
+              "<strong>Definición:</strong> Metodología centrada en la persona que busca resolver problemas complejos de manera creativa y colaborativa, combinando <em>lógica, intuición, investigación y experimentación</em> para crear soluciones útiles y viables.",
+              "<strong>5 Ámbitos de aplicación:</strong> Empresas (nuevos productos/procesos), Educación (pensamiento crítico), Sector público (políticas ciudadanas), Emprendimiento (validar ideas) y Tecnología (experiencias de usuario). <em>Ejemplos de éxito: Airbnb, Nike, IBM, Microsoft, Eutopia</em>."
+            ]
+          },
+          {
+            heading: "Las 5 Fases del Design Thinking (No lineal e iterativo)",
+            type: "grid5",
+            items: [
+              { title: "1. Empatizar", desc: "Conéctate con las necesidades del usuario antes de diseñar (Comprender)." },
+              { title: "2. Definir", desc: "Define el reto o problema de forma clara y humana (Comprender)." },
+              { title: "3. Idear", desc: "Genera muchas ideas sin autolimitaciones ni juicios (Explorar)." },
+              { title: "4. Prototipar", desc: "Haz algo tangible, barato y rápido para probar la idea (Materializar)." },
+              { title: "5. Probar / Testear", desc: "Pon tu solución ante usuarios reales y aprende de su feedback (Materializar)." }
+            ]
+          },
+          {
+            heading: "Las 5 Herramientas Clave del Design Thinking",
+            type: "list",
+            items: [
+              "<strong>1. Mapa de Empatía:</strong> Ayuda a entender al usuario analizando 6 bloques: <em>¿Qué piensa y siente?</em>, <em>¿Qué oye?</em>, <em>¿Qué ve?</em>, <em>¿Qué dice y hace?</em>, <em>Esfuerzos (miedos, frustraciones, obstáculos)</em> y <em>Resultados (deseos, necesidades, medida del éxito)</em>.",
+              "<strong>2. Journey Map (Mapa de experiencia):</strong> Visualiza la experiencia del cliente fase a fase en un proceso (ej. entrar a un local, pedir, comer, pagar), detectando picos positivos y puntos negativos (STOP).",
+              "<strong>3. Brainstorming (Lluvia de ideas / Mapa mental):</strong> Técnica grupal para generar gran cantidad de ideas y conexiones visuales.",
+              "<strong>4. Storyboard:</strong> Representa visualmente mediante viñetas cómo impactaría la solución en la vida real del usuario.",
+              "<strong>5. Prototipos rápidos:</strong> Maquetas, bocetos en cartón o wireframes que permiten probar proyectos rápidamente y con bajo coste."
+            ]
+          }
+        ]
+      },
+      {
+        id: "U6.2",
+        unit: "u6",
+        unitTitle: "UNIDAD 6: Buscando oportunidades de negocio con Design Thinking",
+        badgeColor: "emerald",
+        title: "6.2. Tendencias, Oportunidades de Mercado y Valor",
+        summary: "Cómo detectar hacia dónde se mueve el mercado y qué hace que un cliente elija nuestro producto.",
+        blocks: [
+          {
+            heading: "Conceptos Fundamentales",
+            type: "list",
+            items: [
+              "<strong>Tendencia:</strong> Es la clara dirección particular en la que se mueve el mercado en un intervalo de tiempo.",
+              "<strong>Oportunidad de mercado:</strong> Es la necesidad, carencia, deseo o interés que tiene un cliente.",
+              "<strong>Valor:</strong> Es el grado de utilidad que tiene un producto para un cliente; responde a <em>por qué un cliente escoge un producto en vez de otro</em>."
+            ]
+          },
+          {
+            heading: "Tipos de Tendencias",
+            type: "list",
+            items: [
+              "<strong>Tendencias Económicas:</strong> Relacionan cómo las empresas generan valor y obtienen ingresos implicando cambios de organización (ej. modelos de suscripción como <em>Netflix</em> o <em>Spotify</em>).",
+              "<strong>Tendencias Tecnológicas:</strong> Avances que transforman el mundo empresarial y la vida cotidiana desarrollando nuevos productos y servicios (ej. Inteligencia Artificial como <em>OpenAI</em>).",
+              "<strong>Tendencias Sociales y Culturales:</strong> Se reflejan en cambios de preferencias, valores, hábitos y percepciones de los consumidores."
+            ]
+          },
+          {
+            heading: "Los 4 Requisitos de una Oportunidad de Negocio",
+            type: "grid4",
+            items: [
+              { title: "1. Necesidad no resuelta", desc: "Existencia de un problema o carencia real en el mercado." },
+              { title: "2. Mercado objetivo", desc: "Un grupo de clientes potenciales claramente identificado." },
+              { title: "3. Capacidad de generar valor", desc: "Que el cliente perciba utilidad y beneficios superiores." },
+              { title: "4. Viabilidad", desc: "Que el proyecto sea viable tanto económica como técnicamente." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "U6.3",
+        unit: "u6",
+        unitTitle: "UNIDAD 6: Buscando oportunidades de negocio con Design Thinking",
+        badgeColor: "emerald",
+        title: "6.3. El Mercado Meta y la Segmentación",
+        summary: "Dividir el mercado en grupos homogéneos y elegir la estrategia adecuada para conquistarlos.",
+        blocks: [
+          {
+            heading: "Definición y los 4 Pasos de la Segmentación",
+            type: "steps",
+            items: [
+              { title: "1. Definir el mercado total", desc: "Punto de partida que incluye a todos los clientes potenciales." },
+              { title: "2. Dividir el mercado en segmentos", desc: "Clasificar según 4 criterios: Geográfica (lugar/clima), Demográfica (edad, sexo, ingresos), Psicográfica (estilo de vida, valores, personalidad) y Conductual (hábitos de uso, frecuencia, lealtad)." },
+              { title: "3. Evaluar los segmentos identificados", desc: "Analizar qué segmento está creciendo, si es accesible y si se alinea con los objetivos de la empresa." },
+              { title: "4. Seleccionar el Mercado Meta", desc: "Elegir el grupo específico de consumidores al que dirigiremos nuestros productos y estrategias." }
+            ]
+          },
+          {
+            heading: "Las 3 Estrategias de Selección del Mercado Meta",
+            type: "list",
+            items: [
+              "<strong>Estrategia de Concentración:</strong> La empresa se centra en <strong>1 solo segmento</strong> específico.",
+              "<strong>Estrategia de Diferenciación:</strong> La empresa se dirige a <strong>varios segmentos</strong> adaptando una oferta distinta para cada uno.",
+              "<strong>Estrategia Indiferenciada:</strong> La empresa se dirige a <strong>todo el mercado</strong> con una única oferta estándar."
+            ]
+          },
+          {
+            heading: "Pasos para elaborar un Mapa de Empatía",
+            type: "highlight",
+            text: "Para identificar necesidades mediante el Mapa de Empatía seguimos 5 pasos ordenados: <strong>1. Definir al usuario</strong> → <strong>2. Reunir información</strong> → <strong>3. Rellenar el mapa</strong> → <strong>4. Analizar patrones</strong> → <strong>5. Priorizar necesidades</strong>."
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 2. BANCO COMPLETO DE PREGUNTAS (105 PREGUNTAS ÚNICAS CATEGORIZADAS)
+    // =========================================================================
+    const QUESTIONS_BANK = [
+      // --- UNIDAD 5.1: PENSAMIENTO INVERSO (15 preguntas) ---
+      {
+        id: "q1", unit: "U5", topic: "U5.1", exam: 1,
+        q: "¿Cuál es el orden correcto de las 4 etapas fundamentales del modelo empresarial tradicional?",
+        options: [
+          "Definición de la idea → Elaboración conceptual → Ejecución o puesta en marcha → Búsqueda de clientes",
+          "Búsqueda de clientes → Definición de la idea → Ejecución → Elaboración conceptual",
+          "Identificar necesidad → Prototipar → Ejecución → Búsqueda de financiación",
+          "Ejecución → Búsqueda de clientes → Elaboración conceptual → Evaluación"
+        ],
+        answer: 0,
+        exp: "El modelo tradicional empieza por definir la idea, desarrollarla conceptualmente, ejecutarla/ponerla en marcha y, por último, salir a buscar clientes."
+      },
+      {
+        id: "q2", unit: "U5", topic: "U5.1", exam: 1,
+        q: "¿Qué dos grandes problemas presenta el modelo empresarial tradicional?",
+        options: [
+          "Falta de creatividad y exceso de clientes desde el primer día",
+          "Gran inversión económica y de tiempo, y riesgo de que la idea no satisfaga una necesidad real",
+          "Dependencia exclusiva de subvenciones públicas y falta de organigrama",
+          "Exceso de prototipos rápidos y baja calidad de proveedores"
+        ],
+        answer: 1,
+        exp: "Al dejar la búsqueda de clientes para el final, el modelo tradicional requiere mucha inversión previa de tiempo y dinero con el riesgo de que nadie quiera el producto."
+      },
+      {
+        id: "q3", unit: "U5", topic: "U5.1", exam: 1,
+        q: "¿En qué consiste el Pensamiento Inverso empresarial?",
+        options: [
+          "En copiar exactamente la estrategia de los competidores más grandes del sector",
+          "En comenzar desde el resultado o meta deseada y trabajar hacia atrás para identificar los pasos necesarios",
+          "En reducir los precios por debajo del coste de producción para eliminar a la competencia",
+          "En invertir primero todo el capital en tecnología y luego buscar qué problema resuelve"
+        ],
+        answer: 1,
+        exp: "El pensamiento inverso parte del resultado o necesidad final deseada y retrocede paso a paso para diseñar la solución adecuada."
+      },
+      {
+        id: "q4", unit: "U5", topic: "U5.1", exam: 1,
+        q: "¿Cuál es la primera fase del Pensamiento Inverso?",
+        options: [
+          "Construir el producto o servicio",
+          "Seleccionar las ideas más factibles",
+          "Identificar el problema o necesidad siendo realistas",
+          "Lanzar una campaña publicitaria masiva"
+        ],
+        answer: 2,
+        exp: "Las fases del pensamiento inverso son: 1) Identificar el problema o necesidad, 2) Construir el producto/servicio, 3) Evaluar viabilidad, 4) Seleccionar ideas más factibles."
+      },
+      {
+        id: "q5", unit: "U5", topic: "U5.1", exam: 2,
+        q: "En el caso práctico de 2007 entre Nokia y Waze, ¿por qué fracasó la estrategia de Nokia frente a Waze?",
+        options: [
+          "Porque Nokia no tenía dinero para invertir en tecnología",
+          "Porque Nokia gastó más de 8,1 millones de dólares en sensores costosos, mientras Waze aprovechó gratis el GPS de los móviles de sus usuarios",
+          "Porque Waze prohibió a Nokia usar mapas digitales en Europa",
+          "Porque los usuarios preferían mapas en papel antes que navegación en tiempo real"
+        ],
+        answer: 1,
+        exp: "Nokia siguió un enfoque costoso y complejo (>8,1M$ en sensores), mientras Waze aplicó pensamiento inverso usando los GPS gratuitos de los smartphones de los usuarios."
+      },
+      {
+        id: "q6", unit: "U5", topic: "U5.1", exam: 2,
+        q: "Dentro de la fase 'Evaluar la viabilidad de las ideas generadas' del Pensamiento Inverso, ¿qué pasos se siguen?",
+        options: [
+          "Anotar y organizar las ideas, combinar enfoques inversos y convencionales, y evaluar ventajas y desventajas",
+          "Registrar la patente, contratar personal y abrir oficinas comerciales",
+          "Calcular el punto muerto, pedir un préstamo y diseñar el logotipo",
+          "Eliminar todas las ideas convencionales y quedarse solo con una"
+        ],
+        answer: 0,
+        exp: "Para evaluar la viabilidad hay que anotar y organizar ideas, combinar enfoques inversos y convencionales, y analizar sus ventajas y desventajas."
+      },
+      {
+        id: "q7", unit: "U5", topic: "U5.1", exam: 2,
+        q: "¿Cuál de las siguientes NO es una de las 4 ventajas del Pensamiento Inverso vistas en el temario?",
+        options: [
+          "Claridad en los objetivos",
+          "Anticipación de obstáculos",
+          "Eliminación total de cualquier competidor en el mercado",
+          "Distribución eficiente de recursos"
+        ],
+        answer: 2,
+        exp: "Las 4 ventajas son: Claridad en objetivos, Anticipación de obstáculos, Enfoque creativo e innovador, y Distribución eficiente de recursos."
+      },
+      {
+        id: "q8", unit: "U5", topic: "U5.1", exam: 3,
+        q: "¿Qué ventaja del Pensamiento Inverso permite diseñar estrategias preventivas antes de que surjan fallos graves?",
+        options: [
+          "Anticipación de obstáculos",
+          "Liderazgo en costes",
+          "Segmentación conductual",
+          "Estrategia indiferenciada"
+        ],
+        answer: 0,
+        exp: "La anticipación de obstáculos consiste precisamente en identificar problemas potenciales con antelación para diseñar estrategias preventivas y eficientes."
+      },
+      {
+        id: "q9", unit: "U5", topic: "U5.1", exam: 3,
+        q: "En la fase 'Construir el producto o servicio' del Pensamiento Inverso, ¿cuál es la clave principal?",
+        options: [
+          "Fabricar el producto más caro posible para dar imagen de lujo",
+          "Adaptar el producto directamente a las exigencias reales de la clientela",
+          "Ignorar las opiniones de los usuarios hasta que el producto esté terminado",
+          "Crear un producto estándar válido para cualquier país sin cambios"
+        ],
+        answer: 1,
+        exp: "Al haber partido de la necesidad real en la fase 1, la fase 2 construye el producto adaptándolo a las exigencias de la clientela."
+      },
+      {
+        id: "q10", unit: "U5", topic: "U5.1", exam: 3,
+        q: "¿Cómo contribuye el Pensamiento Inverso a la 'Distribución eficiente de recursos'?",
+        options: [
+          "Aumentando el presupuesto de marketing tradicional",
+          "Optimizando recursos al enfocarlos directamente hacia el logro final deseado",
+          "Subcontratando todos los departamentos de la empresa",
+          "Evitando hacer estudios de viabilidad previa"
+        ],
+        answer: 1,
+        exp: "Al tener claro el objetivo final desde el inicio, no se malgastan recursos en pasos innecesarios."
+      },
+      {
+        id: "q11", unit: "U5", topic: "U5.1", exam: 0,
+        q: "¿Qué significa la ventaja 'Enfoque creativo e innovador' dentro del Pensamiento Inverso?",
+        options: [
+          "Seguir estrictamente las normas tradicionales del sector",
+          "Ruptura con los esquemas tradicionales, exploración de soluciones innovadoras y generación de nuevas oportunidades",
+          "Copiar el logotipo y eslogan de empresas líderes",
+          "Reducir la plantilla para ahorrar costes fijos"
+        ],
+        answer: 1,
+        exp: "Romper con los esquemas tradicionales permite explorar soluciones innovadoras que otros no ven."
+      },
+      {
+        id: "q12", unit: "U5", topic: "U5.1", exam: 0,
+        q: "Un emprendedor quiere crear una app para estudiantes y empieza preguntando qué problemas reales tienen al estudiar antes de programar nada. ¿Qué está aplicando?",
+        options: [
+          "El modelo empresarial tradicional",
+          "El Pensamiento Inverso empresarial",
+          "Una estrategia de liderazgo en costes",
+          "El análisis PESTEL político"
+        ],
+        answer: 1,
+        exp: "Partir del problema/necesidad real del usuario antes de desarrollar el producto es la base del Pensamiento Inverso."
+      },
+      {
+        id: "q13", unit: "U5", topic: "U5.1", exam: 0,
+        q: "¿Qué ocurre en la última fase del Pensamiento Inverso?",
+        options: [
+          "Se seleccionan las ideas más factibles",
+          "Se define por primera vez la idea de negocio",
+          "Se buscan proveedores internacionales",
+          "Se diseña la papelería corporativa"
+        ],
+        answer: 0,
+        exp: "Tras identificar el problema, construir la solución y evaluar la viabilidad, la 4ª fase es la selección de las ideas más factibles."
+      },
+      {
+        id: "q14", unit: "U5", topic: "U5.1", exam: 0,
+        q: "¿Cuánto dinero invirtió aproximadamente Nokia en 2007 en sensores de tráfico según el caso práctico?",
+        options: [
+          "500.000 dólares",
+          "Más de 8,1 millones de dólares",
+          "1,2 millones de euros",
+          "50.000 dólares"
+        ],
+        answer: 1,
+        exp: "El caso práctico señala que Nokia invirtió más de 8,1 millones de dólares en sensores de tráfico."
+      },
+      {
+        id: "q15", unit: "U5", topic: "U5.1", exam: 0,
+        q: "¿Por qué la 'Claridad en los objetivos' es una ventaja del Pensamiento Inverso?",
+        options: [
+          "Porque garantiza beneficios el primer mes",
+          "Porque proporciona un enfoque con metas específicas y una dirección clara para guiar recursos y esfuerzos",
+          "Porque elimina la necesidad de tener un departamento financiero",
+          "Porque sustituye al análisis de la competencia"
+        ],
+        answer: 1,
+        exp: "Al comenzar por la meta deseada, los objetivos quedan perfectamente definidos y guían todo el esfuerzo."
+      },
+
+      // --- UNIDAD 5.2: LA EMPRESA Y SU FUNCIONAMIENTO (15 preguntas) ---
+      {
+        id: "q16", unit: "U5", topic: "U5.2", exam: 1,
+        q: "¿Cómo se define el 'Mercado' según la Unidad 5?",
+        options: [
+          "Un edificio físico donde únicamente se venden alimentos frescos",
+          "Un espacio de intercambio, físico o virtual, donde compradores y vendedores interactúan para cambiar bienes, servicios o recursos",
+          "El departamento encargado de la publicidad de una empresa",
+          "El conjunto de leyes que regulan los impuestos de un país"
+        ],
+        answer: 1,
+        exp: "El mercado puede ser físico o virtual y es el espacio donde interactúan oferta (vendedores) y demanda (compradores)."
+      },
+      {
+        id: "q17", unit: "U5", topic: "U5.2", exam: 1,
+        q: "¿Qué determina el equilibrio entre la Oferta y la Demanda en el mercado?",
+        options: [
+          "El organigrama circular",
+          "El precio de equilibrio",
+          "La cultura empresarial",
+          "El eslogan corporativo"
+        ],
+        answer: 1,
+        exp: "La intersección entre la curva de oferta y la curva de demanda determina el precio de equilibrio."
+      },
+      {
+        id: "q18", unit: "U5", topic: "U5.2", exam: 1,
+        q: "¿Por qué se dice que la empresa es un 'sistema abierto'?",
+        options: [
+          "Porque no tiene puertas ni horarios de cierre",
+          "Porque se relaciona con el entorno y todo lo que ocurre fuera le afecta e influye en sus decisiones",
+          "Porque cualquier persona puede entrar a gestionar sus finanzas",
+          "Porque no tiene jerarquía ni departamentos definidos"
+        ],
+        answer: 1,
+        exp: "Un sistema abierto interactúa constantemente con su entorno exterior, viéndose influido por él y adaptándose a los cambios."
+      },
+      {
+        id: "q19", unit: "U5", topic: "U5.2", exam: 1,
+        q: "¿Qué función cumple el departamento de 'Administración' en una empresa?",
+        options: [
+          "Transformar la materia prima en productos terminados",
+          "Planificar, organizar, ejecutar y controlar",
+          "Seleccionar y contratar únicamente al personal nuevo",
+          "Vender directamente los productos en tiendas minoristas"
+        ],
+        answer: 1,
+        exp: "Las 4 funciones clásicas del departamento de Administración son: planificar, organizar, ejecutar y controlar."
+      },
+      {
+        id: "q20", unit: "U5", topic: "U5.2", exam: 2,
+        q: "¿Qué departamento se encarga de transformar la materia prima en productos o servicios?",
+        options: [
+          "Finanzas",
+          "Ventas",
+          "Producción",
+          "Recursos Humanos"
+        ],
+        answer: 2,
+        exp: "El departamento de Producción es el responsable de transformar materias primas en productos o servicios."
+      },
+      {
+        id: "q21", unit: "U5", topic: "U5.2", exam: 2,
+        q: "¿Qué es un organigrama empresarial?",
+        options: [
+          "El listado de precios de todos los productos de la empresa",
+          "Una representación gráfica de la empresa que muestra la jerarquía, la dependencia, los canales de comunicación y las competencias",
+          "El documento legal de constitución ante notario",
+          "Un gráfico que mide únicamente las ventas mensuales"
+        ],
+        answer: 1,
+        exp: "El organigrama representa gráficamente la estructura jerárquica, canales de comunicación y competencias del grupo."
+      },
+      {
+        id: "q22", unit: "U5", topic: "U5.2", exam: 2,
+        q: "¿Cuáles son los 4 tipos de organigramas mostrados en el esquema de la Unidad 5?",
+        options: [
+          "Funcional, Horizontal, Vertical y Circular",
+          "Lineal, Triangular, Cuadrado y Mixto",
+          "Interno, Externo, Público y Privado",
+          "Estratégico, Táctico, Operativo y Financiero"
+        ],
+        answer: 0,
+        exp: "Los tipos de organigramas que aparecen en la unidad son: Funcional, Horizontal, Vertical y Circular."
+      },
+      {
+        id: "q23", unit: "U5", topic: "U5.2", exam: 2,
+        q: "¿Qué diferencia existe entre 'Cultura empresarial' e 'Imagen corporativa'?",
+        options: [
+          "Son exactamente lo mismo",
+          "La cultura empresarial son los valores, creencias y normas internas; la imagen corporativa es cómo se proyecta al exterior y cómo nos ven",
+          "La cultura empresarial es solo el logotipo y la imagen corporativa son los salarios",
+          "La imagen corporativa solo existe en empresas industriales"
+        ],
+        answer: 1,
+        exp: "La cultura es la identidad interna (valores, creencias, normas) y la imagen corporativa es su proyección exterior hacia el mercado y la sociedad."
+      },
+      {
+        id: "q24", unit: "U5", topic: "U5.2", exam: 3,
+        q: "¿Cuáles son los 6 elementos visuales que proyectan la imagen corporativa según el temario?",
+        options: [
+          "Nombre de la empresa, logotipo, eslogan, colores, página web y papelería",
+          "Precio, producto, plaza, promoción, personas y procesos",
+          "CEO, producción, ventas, finanzas, RRHH y administración",
+          "Político, económico, social, tecnológico, ecológico y legal"
+        ],
+        answer: 0,
+        exp: "Los 6 elementos de la imagen corporativa son: 1. Nombre, 2. Logotipo, 3. Eslogan, 4. Colores, 5. Página web y 6. Papelería."
+      },
+      {
+        id: "q25", unit: "U5", topic: "U5.2", exam: 3,
+        q: "Cuando los distintos subsistemas (departamentos) de una empresa trabajan coordinados mejorando los resultados globales, se produce:",
+        options: [
+          "Una sinergia",
+          "Un producto sustitutivo",
+          "Una estrategia indiferenciada",
+          "Un análisis PESTEL"
+        ],
+        answer: 0,
+        exp: "La interacción positiva entre los subsistemas de la empresa genera sinergias que mejoran los resultados."
+      },
+      {
+        id: "q26", unit: "U5", topic: "U5.2", exam: 3,
+        q: "En un organigrama circular, ¿dónde se sitúa habitualmente la dirección o CEO?",
+        options: [
+          "En el anillo más exterior",
+          "En el círculo central",
+          "En la esquina inferior izquierda",
+          "Fuera del diagrama"
+        ],
+        answer: 1,
+        exp: "En el organigrama circular, el CEO ocupa el centro y los departamentos y funciones se despliegan en anillos concéntricos."
+      },
+      {
+        id: "q27", unit: "U5", topic: "U5.2", exam: 0,
+        q: "¿Qué departamento gestiona los recursos económicos y financieros de la empresa?",
+        options: [
+          "Finanzas",
+          "Ventas",
+          "Recursos Humanos",
+          "Producción"
+        ],
+        answer: 0,
+        exp: "El departamento de Finanzas se encarga de los recursos económicos y financieros."
+      },
+      {
+        id: "q28", unit: "U5", topic: "U5.2", exam: 0,
+        q: "¿Qué departamento se ocupa de las funciones comerciales?",
+        options: [
+          "Producción",
+          "Ventas",
+          "Administración",
+          "Recursos Humanos"
+        ],
+        answer: 1,
+        exp: "El departamento de Ventas desarrolla las funciones comerciales."
+      },
+      {
+        id: "q29", unit: "U5", topic: "U5.2", exam: 0,
+        q: "Una buena imagen corporativa ayuda a la empresa a:",
+        options: [
+          "Reflejar profesionalidad, coherencia y confianza, diferenciándose de los competidores",
+          "Evitar pagar impuestos locales",
+          "Eliminar la necesidad de tener proveedores",
+          "Aumentar el precio de equilibrio automáticamente"
+        ],
+        answer: 0,
+        exp: "Una imagen corporativa cuidada transmite profesionalidad, coherencia y confianza, diferenciando a la empresa."
+      },
+      {
+        id: "q30", unit: "U5", topic: "U5.2", exam: 0,
+        q: "¿Qué característica permite a la empresa como sistema ajustarse a los cambios coyunturales del mercado?",
+        options: [
+          "Autocontrolarse y adaptarse",
+          "Ser un sistema cerrado",
+          "Tener un organigrama vertical rígido",
+          "Carecer de subsistemas"
+        ],
+        answer: 0,
+        exp: "La empresa como sistema tiene capacidad de autocontrolarse y adaptarse a los cambios coyunturales."
+      },
+
+      // --- UNIDAD 5.3: EL ENTORNO, PORTER Y PESTEL (15 preguntas) ---
+      {
+        id: "q31", unit: "U5", topic: "U5.3", exam: 1,
+        q: "¿Qué diferencia el Microentorno (entorno específico) del Macroentorno (entorno general)?",
+        options: [
+          "El microentorno afecta directamente al sector de la empresa (clientes, proveedores, competencia), mientras el macroentorno afecta a todas las empresas por igual",
+          "El microentorno son las leyes internacionales y el macroentorno son los trabajadores internos",
+          "El microentorno se analiza con PESTEL y el macroentorno con Porter",
+          "No existe ninguna diferencia entre ambos conceptos"
+        ],
+        answer: 0,
+        exp: "El microentorno es el entorno cercano/específico del sector; el macroentorno abarca factores generales (PESTEL) que influyen en toda la economía."
+      },
+      {
+        id: "q32", unit: "U5", topic: "U5.3", exam: 1,
+        q: "¿Qué son los 'productos sustitutivos' dentro del análisis de la competencia?",
+        options: [
+          "Productos defectuosos que se devuelven al proveedor",
+          "Productos que cubren la misma necesidad aunque sean diferentes",
+          "Marcas exactamente iguales fabricadas por la misma empresa",
+          "Materias primas recicladas"
+        ],
+        answer: 1,
+        exp: "Los productos sustitutivos satisfacen la misma necesidad del cliente con una alternativa distinta (ej. prepararse café en casa vs ir a una cafetería)."
+      },
+      {
+        id: "q33", unit: "U5", topic: "U5.3", exam: 1,
+        q: "¿Cuáles son las 3 estrategias competitivas propuestas para hacer frente a la competencia y productos sustitutivos?",
+        options: [
+          "Diferenciación del producto, liderazgo en costes y segmentación de la clientela",
+          "Empatizar, definir e idear",
+          "Planificar, ejecutar y controlar",
+          "Equidad, cooperación y reparto de la riqueza"
+        ],
+        answer: 0,
+        exp: "Las 3 estrategias competitivas son: Diferenciación del producto, Liderazgo en costes y Segmentación de la clientela."
+      },
+      {
+        id: "q34", unit: "U5", topic: "U5.3", exam: 1,
+        q: "¿Qué herramienta se utiliza para analizar el Microentorno o entorno competitivo específico?",
+        options: [
+          "Las 5 Fuerzas de Porter",
+          "El análisis PESTEL",
+          "La Matriz del Bien Común 5.0",
+          "El Storyboard"
+        ],
+        answer: 0,
+        exp: "Las 5 Fuerzas de Porter analizan el microentorno competitivo del sector."
+      },
+      {
+        id: "q35", unit: "U5", topic: "U5.3", exam: 2,
+        q: "¿Cuáles son las 5 Fuerzas de Porter?",
+        options: [
+          "1. Amenaza nuevos competidores, 2. Poder negociación clientes, 3. Amenaza productos sustitutivos, 4. Poder negociación proveedores, 5. Rivalidad entre competidores existentes",
+          "1. Político, 2. Económico, 3. Social, 4. Tecnológico, 5. Legal",
+          "1. Empatizar, 2. Definir, 3. Idear, 4. Prototipar, 5. Testear",
+          "1. Producción, 2. Ventas, 3. Finanzas, 4. RRHH, 5. Administración"
+        ],
+        answer: 0,
+        exp: "Esas son exactamente las 5 Fuerzas competitivas de Michael Porter."
+      },
+      {
+        id: "q36", unit: "U5", topic: "U5.3", exam: 2,
+        q: "¿Qué significan las siglas del análisis PESTEL?",
+        options: [
+          "Político, Económico, Social, Tecnológico, Ecológico y Legal",
+          "Producto, Estrategia, Servicio, Trabajo, Empresa y Logística",
+          "Planificación, Ejecución, Seguimiento, Técnica, Evaluación y Liderazgo",
+          "Proveedores, Entorno, Sociedad, Tendencias, Equidad y Lucro"
+        ],
+        answer: 0,
+        exp: "PESTEL analiza los factores Políticos, Económicos, Sociales, Tecnológicos, Ecológicos y Legales del macroentorno."
+      },
+      {
+        id: "q37", unit: "U5", topic: "U5.3", exam: 2,
+        q: "En el caso práctico 'Café Aurora', las personas que deciden prepararse café en casa en lugar de ir a la cafetería representan:",
+        options: [
+          "Productos sustitutivos",
+          "Proveedores de materias primas",
+          "Intermediarios logísticos",
+          "Factores políticos del PESTEL"
+        ],
+        answer: 0,
+        exp: "Preparar café en casa cubre la misma necesidad de tomar café pero mediante una alternativa diferente: es un producto sustitutivo."
+      },
+      {
+        id: "q38", unit: "U5", topic: "U5.3", exam: 2,
+        q: "¿Cómo se relacionan el análisis PESTEL y Porter con el análisis DAFO?",
+        options: [
+          "PESTEL y Porter permiten identificar las Amenazas y Oportunidades (análisis externo) del DAFO",
+          "PESTEL y Porter definen únicamente las Debilidades internas",
+          "No tienen ninguna relación con el DAFO",
+          "Sustituyen por completo al plan financiero"
+        ],
+        answer: 0,
+        exp: "Al estudiar el macroentorno (PESTEL) y el microentorno (Porter), la empresa detecta las Oportunidades y Amenazas externas del DAFO."
+      },
+      {
+        id: "q39", unit: "U5", topic: "U5.3", exam: 3,
+        q: "Una subida de los tipos de interés y de la inflación que reduce la capacidad de compra de los consumidores es un factor PESTEL de tipo:",
+        options: [
+          "Económico",
+          "Ecológico",
+          "Tecnológico",
+          "Sociocultural"
+        ],
+        answer: 0,
+        exp: "La inflación, los tipos de interés y el crecimiento económico pertenecen al factor Económico del PESTEL."
+      },
+      {
+        id: "q40", unit: "U5", topic: "U5.3", exam: 3,
+        q: "La aprobación de una nueva ley de protección de datos o cambios en el salario mínimo interprofesional pertenecen al factor PESTEL:",
+        options: [
+          "Legal (Político-legal)",
+          "Tecnológico",
+          "Ecológico",
+          "Demográfico"
+        ],
+        answer: 0,
+        exp: "Las leyes, reglamentos y normativas laborales o comerciales corresponden al ámbito Legal."
+      },
+      {
+        id: "q41", unit: "U5", topic: "U5.3", exam: 3,
+        q: "¿Qué papel desempeñan los 'Intermediarios' en el microentorno de la empresa?",
+        options: [
+          "Conectan a las empresas con sus clientes finales (minoristas, distribuidores, agentes logísticos) y afectan a costes y márgenes",
+          "Dictan las leyes internacionales de comercio",
+          "Son los encargados de diseñar el logotipo corporativo",
+          "Representan exclusivamente a los sindicatos de trabajadores"
+        ],
+        answer: 0,
+        exp: "Los intermediarios (distribuidores, minoristas, logística) conectan empresa y cliente final, influyendo en los márgenes y costes."
+      },
+      {
+        id: "q42", unit: "U5", topic: "U5.3", exam: 0,
+        q: "Al seleccionar a los 'Proveedores' en el microentorno, ¿qué aspectos clave debe vigilar la empresa?",
+        options: [
+          "Plazos de entrega, márgenes de beneficios y calidad del producto",
+          "El color de sus oficinas y su eslogan",
+          "Únicamente su ubicación geográfica",
+          "Su nivel de participación en redes sociales"
+        ],
+        answer: 0,
+        exp: "Los proveedores suministran materias primas y es vital controlar sus plazos de entrega, márgenes y calidad."
+      },
+      {
+        id: "q43", unit: "U5", topic: "U5.3", exam: 0,
+        q: "El envejecimiento de la población o el cambio hacia hábitos de vida más saludables son factores PESTEL de tipo:",
+        options: [
+          "Socioculturales",
+          "Tecnológicos",
+          "Políticos",
+          "Legales"
+        ],
+        answer: 0,
+        exp: "La demografía, los estilos de vida, los valores y las preferencias culturales son factores Socioculturales."
+      },
+      {
+        id: "q44", unit: "U5", topic: "U5.3", exam: 0,
+        q: "La irrupción de la automatización, la ciberseguridad y nuevas patentes digitales se encuadran en el factor PESTEL:",
+        options: [
+          "Tecnológico",
+          "Ecológico",
+          "Económico",
+          "Político"
+        ],
+        answer: 0,
+        exp: "Las TIC, patentes, digitalización, ciberseguridad e innovación pertenecen al factor Tecnológico."
+      },
+      {
+        id: "q45", unit: "U5", topic: "U5.3", exam: 0,
+        q: "Las normativas sobre cambio climático, energías renovables y gestión de residuos forman parte del factor PESTEL:",
+        options: [
+          "Ecológico / Medioambiental",
+          "Legal exclusivamente",
+          "Social",
+          "Financiero"
+        ],
+        answer: 0,
+        exp: "Todo lo relacionado con el medio ambiente, sostenibilidad y cambio climático es el factor Ecológico/Medioambiental."
+      },
+
+      // --- UNIDAD 5.4: BIEN COMÚN Y ECONOMÍA SOCIAL (12 preguntas) ---
+      {
+        id: "q46", unit: "U5", topic: "U5.4", exam: 1,
+        q: "¿Qué dos ejes se cruzan en la Matriz del Bien Común 5.0?",
+        options: [
+          "5 Grupos de Interés y 4 Valores fundamentales",
+          "Oferta y Demanda",
+          "Debilidades y Fortalezas",
+          "Empatía y Prototipado"
+        ],
+        answer: 0,
+        exp: "La Matriz del Bien Común 5.0 cruza 5 Grupos de Interés (filas A-E) con 4 Valores éticos (columnas)."
+      },
+      {
+        id: "q47", unit: "U5", topic: "U5.4", exam: 1,
+        q: "¿Cuáles son los 4 Valores de la Matriz del Bien Común 5.0?",
+        options: [
+          "Dignidad humana, Solidaridad y justicia, Sostenibilidad medioambiental, Transparencia y participación democrática",
+          "Rentabilidad, Competitividad, Liderazgo en costes y Expansión",
+          "Político, Económico, Social y Tecnológico",
+          "Planificar, Organizar, Ejecutar y Controlar"
+        ],
+        answer: 0,
+        exp: "Los 4 valores son: Dignidad humana, Solidaridad y justicia, Sostenibilidad medioambiental, y Transparencia y participación democrática."
+      },
+      {
+        id: "q48", unit: "U5", topic: "U5.4", exam: 2,
+        q: "¿Cuáles son los 5 Grupos de Interés de la Matriz del Bien Común 5.0?",
+        options: [
+          "A. Proveedores, B. Propietarios y proveedores financieros, C. Trabajadores, D. Clientes y otras empresas, E. Entorno social",
+          "A. Gobierno, B. Bancos, C. Sindicatos, D. Competidores, E. Prensa",
+          "A. Producción, B. Ventas, C. Finanzas, D. RRHH, E. Administración",
+          "A. Empatizar, B. Definir, C. Idear, D. Prototipar, E. Probar"
+        ],
+        answer: 0,
+        exp: "Los 5 grupos de interés son: Proveedores (A), Propietarios y proveedores financieros (B), Trabajadores (C), Clientes y otras empresas (D) y Entorno social (E)."
+      },
+      {
+        id: "q49", unit: "U5", topic: "U5.4", exam: 2,
+        q: "En la Economía Social y Solidaria, ¿qué principio fomenta el trabajo conjunto y la ayuda mutua en lugar de la competencia?",
+        options: [
+          "Cooperación",
+          "Liderazgo en costes",
+          "Estrategia indiferenciada",
+          "Rivalidad competitiva"
+        ],
+        answer: 0,
+        exp: "El principio de Cooperación promueve el trabajo conjunto y la ayuda mutua frente a la competencia destructiva."
+      },
+      {
+        id: "q50", unit: "U5", topic: "U5.4", exam: 3,
+        q: "¿Cuántos son los principios fundamentales de la Economía Social y Solidaria resumidos en la Unidad 5?",
+        options: [
+          "6 principios (Equidad, Trabajo digno, Sostenibilidad ecológica, Cooperación, Reparto de la riqueza, Compromiso con el entorno)",
+          "3 principios (Ahorro, Inversión y Consumo)",
+          "4 principios (Oferta, Demanda, Precio y Beneficio)",
+          "2 principios (Competencia y Rentabilidad)"
+        ],
+        answer: 0,
+        exp: "Son 6 principios: Equidad, Trabajo digno, Sostenibilidad ecológica, Cooperación, Reparto de la riqueza y Compromiso con el entorno."
+      },
+      {
+        id: "q51", unit: "U5", topic: "U5.4", exam: 3,
+        q: "¿Qué principio de la Economía Social y Solidaria garantiza empleo con justicia, respeto y condiciones humanas?",
+        options: [
+          "Trabajo digno",
+          "Reparto de la riqueza",
+          "Equidad",
+          "Sostenibilidad ecológica"
+        ],
+        answer: 0,
+        exp: "El principio de Trabajo digno asegura condiciones laborales justas, respetuosas y humanas."
+      },
+      {
+        id: "q52", unit: "U5", topic: "U5.4", exam: 0,
+        q: "¿Qué principio de la Economía Social y Solidaria impulsa el desarrollo local y la responsabilidad con la comunidad?",
+        options: [
+          "Compromiso con el entorno",
+          "Equidad",
+          "Cooperación",
+          "Transparencia financiera"
+        ],
+        answer: 0,
+        exp: "El Compromiso con el entorno se centra en impulsar el desarrollo local y la responsabilidad hacia la comunidad."
+      },
+      {
+        id: "q53", unit: "U5", topic: "U5.4", exam: 0,
+        q: "En la Matriz del Bien Común 5.0, el indicador 'C1: Dignidad humana en el puesto de trabajo' cruza el valor Dignidad humana con el grupo de interés:",
+        options: [
+          "Trabajadores",
+          "Proveedores",
+          "Clientes y otras empresas",
+          "Entorno social"
+        ],
+        answer: 0,
+        exp: "La fila C corresponde a los Trabajadores, por lo que C1 evalúa la dignidad humana en el puesto de trabajo."
+      },
+      {
+        id: "q54", unit: "U5", topic: "U5.4", exam: 0,
+        q: "¿Qué busca el principio de 'Equidad' en la Economía Social y Solidaria?",
+        options: [
+          "Promover la igualdad de oportunidades y derechos para todas las personas",
+          "Maximizar el beneficio de los accionistas mayoritarios",
+          "Reducir los costes laborales al mínimo legal",
+          "Competir agresivamente contra pequeñas empresas"
+        ],
+        answer: 0,
+        exp: "La Equidad promueve la igualdad real de oportunidades y derechos para todas las personas."
+      },
+      {
+        id: "q55", unit: "U5", topic: "U5.4", exam: 0,
+        q: "¿Qué establece el principio de 'Reparto de la riqueza' en la Economía Social y Solidaria?",
+        options: [
+          "Distribuir los beneficios de forma justa y solidaria",
+          "Acumular todos los beneficios en paraísos fiscales",
+          "Repartir los beneficios únicamente entre los proveedores externos",
+          "No generar ningún tipo de ingreso económico"
+        ],
+        answer: 0,
+        exp: "El reparto de la riqueza implica distribuir los beneficios generados de forma justa y solidaria."
+      },
+      {
+        id: "q56", unit: "U5", topic: "U5.4", exam: 0,
+        q: "En la Matriz del Bien Común 5.0, 'E3: Reducción del impacto medioambiental' corresponde al grupo de interés:",
+        options: [
+          "Entorno social",
+          "Proveedores",
+          "Propietarios y proveedores financieros",
+          "Trabajadores"
+        ],
+        answer: 0,
+        exp: "La fila E corresponde al Entorno social, evaluando el impacto positivo y ecológico de la empresa en la sociedad."
+      },
+      {
+        id: "q57", unit: "U5", topic: "U5.4", exam: 0,
+        q: "¿Qué principio de la Economía Social busca el desarrollo sin dañar el medio ambiente?",
+        options: [
+          "Sostenibilidad ecológica",
+          "Trabajo digno",
+          "Equidad",
+          "Cooperación"
+        ],
+        answer: 0,
+        exp: "La Sostenibilidad ecológica persigue el desarrollo económico respetando y protegiendo el medio ambiente."
+      },
+
+      // --- UNIDAD 6.1: DESIGN THINKING Y HERRAMIENTAS (18 preguntas) ---
+      {
+        id: "q58", unit: "U6", topic: "U6.1", exam: 1,
+        q: "¿Qué es el Design Thinking o Pensamiento de Diseño?",
+        options: [
+          "Un programa informático para dibujar planos industriales en 3D",
+          "Una metodología centrada en la persona para resolver problemas complejos de forma creativa y colaborativa, combinando lógica, intuición, investigación y experimentación",
+          "Una técnica contable para calcular impuestos empresariales",
+          "Un método rígido que prohíbe volver atrás una vez empezado el proyecto"
+        ],
+        answer: 1,
+        exp: "El Design Thinking es una metodología centrada en las personas que combina lógica, intuición, investigación y experimentación."
+      },
+      {
+        id: "q59", unit: "U6", topic: "U6.1", exam: 1,
+        q: "¿Cuál es el orden correcto de las 5 fases del Design Thinking?",
+        options: [
+          "Empatizar → Definir → Idear → Prototipar → Probar (Testear)",
+          "Idear → Empatizar → Probar → Definir → Prototipar",
+          "Prototipar → Definir → Empatizar → Idear → Vender",
+          "Definir → Idear → Empatizar → Probar → Prototipar"
+        ],
+        answer: 0,
+        exp: "Las 5 fases del Design Thinking son: 1. Empatizar, 2. Definir, 3. Idear, 4. Prototipar y 5. Probar/Testear."
+      },
+      {
+        id: "q60", unit: "U6", topic: "U6.1", exam: 1,
+        q: "¿En qué fase del Design Thinking se busca conectarse profundamente con las necesidades del usuario antes de diseñar?",
+        options: [
+          "Empatizar",
+          "Prototipar",
+          "Probar",
+          "Implementar"
+        ],
+        answer: 0,
+        exp: "Empatizar consiste en ponerse en el lugar del usuario y comprender sus necesidades antes de proponer soluciones."
+      },
+      {
+        id: "q61", unit: "U6", topic: "U6.1", exam: 1,
+        q: "¿En qué fase del Design Thinking se generan muchas ideas sin autolimitaciones ni juicios previos?",
+        options: [
+          "Idear",
+          "Definir",
+          "Empatizar",
+          "Testear"
+        ],
+        answer: 0,
+        exp: "En la fase de Idear se fomenta la creatividad libre para generar la mayor cantidad posible de ideas sin autolimitaciones."
+      },
+      {
+        id: "q62", unit: "U6", topic: "U6.1", exam: 1,
+        q: "¿Qué herramienta del Design Thinking analiza qué piensa y siente, qué oye, qué ve, qué dice y hace, esfuerzos y resultados de un usuario?",
+        options: [
+          "Mapa de Empatía",
+          "Análisis PESTEL",
+          "Organigrama funcional",
+          "Matriz del Bien Común"
+        ],
+        answer: 0,
+        exp: "El Mapa de Empatía permite comprender en profundidad al cliente analizando lo que piensa/siente, oye, ve, dice/hace, sus esfuerzos y resultados."
+      },
+      {
+        id: "q63", unit: "U6", topic: "U6.1", exam: 2,
+        q: "¿Qué herramienta del Design Thinking visualiza la experiencia del cliente fase a fase en un proceso (detectando momentos positivos y puntos negativos o STOP)?",
+        options: [
+          "Journey Map",
+          "Brainstorming",
+          "Organigrama vertical",
+          "Análisis de Porter"
+        ],
+        answer: 0,
+        exp: "El Journey Map traza el recorrido del cliente en cada etapa (ej. entrar, pedir, comer, pagar) identificando experiencias positivas y puntos de fricción (STOP)."
+      },
+      {
+        id: "q64", unit: "U6", topic: "U6.1", exam: 2,
+        q: "¿Para qué sirve la herramienta 'Storyboard' dentro del Design Thinking?",
+        options: [
+          "Para representar visualmente mediante viñetas cómo impactaría la solución en la vida del usuario",
+          "Para calcular los costes fijos y variables de la empresa",
+          "Para seleccionar proveedores de materias primas",
+          "Para redactar los contratos laborales"
+        ],
+        answer: 0,
+        exp: "El Storyboard cuenta de forma gráfica (como un cómic) cómo el usuario interactúa con la solución y cómo mejora su vida."
+      },
+      {
+        id: "q65", unit: "U6", topic: "U6.1", exam: 2,
+        q: "¿Qué objetivo tienen los 'Prototipos rápidos' en Design Thinking?",
+        options: [
+          "Crear versiones tangibles, rápidas y económicas para probar ideas y aprender antes de invertir mucho dinero",
+          "Fabricar el producto definitivo en serie para venderlo en grandes superficies",
+          "Sustituir la fase de empatía con los usuarios",
+          "Obtener patentes internacionales definitivas"
+        ],
+        answer: 0,
+        exp: "Prototipar consiste en hacer algo tangible de forma rápida y barata para testearlo con usuarios reales y mejorar."
+      },
+      {
+        id: "q66", unit: "U6", topic: "U6.1", exam: 2,
+        q: "¿Cuáles de las siguientes empresas aparecen como ejemplos reales de aplicación exitosa del Design Thinking en la Unidad 6?",
+        options: [
+          "Airbnb, Nike, IBM, Microsoft y Eutopia",
+          "Nokia y Blockbuster",
+          "Únicamente bancos centrales",
+          "Solo empresas agrícolas tradicionales"
+        ],
+        answer: 0,
+        exp: "En las diapositivas de la Unidad 6 se destacan Airbnb, Nike, IBM, Microsoft y Eutopia como casos de uso de Design Thinking."
+      },
+      {
+        id: "q67", unit: "U6", topic: "U6.1", exam: 3,
+        q: "Según el esquema 'Design Thinking 101' de la Unidad 6, las fases se agrupan en tres grandes bloques:",
+        options: [
+          "Understand (Comprender), Explore (Explorar) y Materialize (Materializar)",
+          "Comprar, Vender y Cobrar",
+          "Planificar, Ejecutar y Liquidar",
+          "Segmentar, Posicionar y Publicitar"
+        ],
+        answer: 0,
+        exp: "Empatizar y Definir forman 'Understand'; Idear y Prototipar forman 'Explore'; Probar e Implementar forman 'Materialize'."
+      },
+      {
+        id: "q68", unit: "U6", topic: "U6.1", exam: 3,
+        q: "En el Mapa de Empatía, los miedos, frustraciones y obstáculos del usuario se anotan en el apartado de:",
+        options: [
+          "Esfuerzos",
+          "Resultados",
+          "¿Qué oye?",
+          "¿Qué ve?"
+        ],
+        answer: 0,
+        exp: "En la parte inferior del Mapa de Empatía, 'Esfuerzos' recoge miedos, frustraciones y obstáculos, mientras 'Resultados' recoge deseos y necesidades."
+      },
+      {
+        id: "q69", unit: "U6", topic: "U6.1", exam: 3,
+        q: "¿En qué 5 ámbitos destaca la importancia del Design Thinking según el punto 1.1 de la Unidad 6?",
+        options: [
+          "Empresas, Educación, Sector público, Emprendimiento y Tecnología",
+          "Agricultura, Minería, Pesca, Ganadería y Silvicultura",
+          "Política, Religión, Deporte, Música y Cine",
+          "Contabilidad, Fiscalidad, Auditoría, Banca y Seguros"
+        ],
+        answer: 0,
+        exp: "El Design Thinking se aplica con éxito en Empresas, Educación, Sector público, Emprendimiento y Tecnología."
+      },
+      {
+        id: "q70", unit: "U6", topic: "U6.1", exam: 0,
+        q: "¿Qué fase del Design Thinking sigue inmediatamente después de 'Empatizar'?",
+        options: [
+          "Definir (definir el reto de forma clara y humana)",
+          "Probar (testear)",
+          "Prototipar",
+          "Vender"
+        ],
+        answer: 0,
+        exp: "Tras Empatizar con el usuario, el segundo paso es Definir claramente el problema o reto."
+      },
+      {
+        id: "q71", unit: "U6", topic: "U6.1", exam: 0,
+        q: "¿Qué ocurre en la fase 'Probar' (Testear) del Design Thinking?",
+        options: [
+          "Se pone la solución o prototipo ante usuarios reales para observar su reacción y aprender",
+          "Se da por cerrado el proyecto sin admitir cambios",
+          "Se redacta el organigrama de la empresa",
+          "Se realiza un análisis PESTEL"
+        ],
+        answer: 0,
+        exp: "Probar consiste en mostrar el prototipo a usuarios reales para recoger feedback y, si es necesario, volver atrás para mejorar."
+      },
+      {
+        id: "q72", unit: "U6", topic: "U6.1", exam: 0,
+        q: "¿Qué herramienta del Design Thinking utiliza mapas mentales visuales y asociaciones libres para generar ideas en equipo?",
+        options: [
+          "Brainstorming",
+          "Journey Map",
+          "Matriz del Bien Común",
+          "Organigrama circular"
+        ],
+        answer: 0,
+        exp: "El Brainstorming (lluvia de ideas / visual brainstorming) sirve para generar ideas en grupo mediante conexiones."
+      },
+      {
+        id: "q73", unit: "U6", topic: "U6.1", exam: 0,
+        q: "Si al probar un prototipo con usuarios descubrimos que no entienden cómo funciona, el Design Thinking recomienda:",
+        options: [
+          "Iterar: volver a fases anteriores (como Idear o Prototipar) para rediseñarlo con lo aprendido",
+          "Obligar al cliente a comprarlo igualmente",
+          "Abandonar por completo la metodología",
+          "Ignorar las críticas de los usuarios"
+        ],
+        answer: 0,
+        exp: "El Design Thinking es un proceso iterativo y no lineal; las flechas permiten volver atrás para perfeccionar la solución."
+      },
+      {
+        id: "q74", unit: "U6", topic: "U6.1", exam: 0,
+        q: "En el Mapa de Empatía, los deseos, necesidades y la medida del éxito del usuario se incluyen en:",
+        options: [
+          "Resultados",
+          "Esfuerzos",
+          "¿Qué ve?",
+          "¿Qué oye?"
+        ],
+        answer: 0,
+        exp: "El bloque 'Resultados' refleja lo que el usuario desea alcanzar y qué considera un éxito."
+      },
+      {
+        id: "q75", unit: "U6", topic: "U6.1", exam: 0,
+        q: "¿Cómo ayuda el Design Thinking en el ámbito del Emprendimiento?",
+        options: [
+          "Permite identificar ideas de negocio, validarlas y crear soluciones que destaquen en el mercado",
+          "Garantiza subvenciones públicas a fondo perdido",
+          "Evita tener que segmentar el mercado",
+          "Sustituye al departamento de producción"
+        ],
+        answer: 0,
+        exp: "En emprendimiento, ayuda a detectar oportunidades reales, validar ideas rápido y diferenciarse."
+      },
+
+      // --- UNIDAD 6.2: TENDENCIAS, VALOR Y OPORTUNIDADES (15 preguntas) ---
+      {
+        id: "q76", unit: "U6", topic: "U6.2", exam: 1,
+        q: "¿Cómo define la Unidad 6 el concepto de 'Tendencia'?",
+        options: [
+          "La clara dirección particular en la que se mueve el mercado en un intervalo de tiempo",
+          "Una moda pasajera que dura únicamente un día",
+          "El precio mínimo al que se puede vender un producto",
+          "El logotipo de una empresa tecnológica"
+        ],
+        answer: 0,
+        exp: "Una tendencia es la dirección clara en la que evoluciona el mercado durante un periodo de tiempo."
+      },
+      {
+        id: "q77", unit: "U6", topic: "U6.2", exam: 1,
+        q: "¿Qué es una 'Oportunidad de mercado'?",
+        options: [
+          "La necesidad, carencia, deseo o interés que tiene un cliente",
+          "Un descuento puntual en las materias primas",
+          "La contratación de un nuevo director financiero",
+          "Un organigrama horizontal"
+        ],
+        answer: 0,
+        exp: "La oportunidad de mercado nace de una necesidad, carencia, deseo o interés no satisfecho de los clientes."
+      },
+      {
+        id: "q78", unit: "U6", topic: "U6.2", exam: 1,
+        q: "¿Qué significa el concepto de 'Valor' en marketing y gestión empresarial?",
+        options: [
+          "Únicamente el coste de fabricación de un artículo",
+          "El grado de utilidad que tiene un producto para un cliente; responde a por qué un cliente escoge un producto en vez de otro",
+          "El salario mensual de los trabajadores",
+          "El número de competidores en un barrio"
+        ],
+        answer: 1,
+        exp: "El valor mide la utilidad percibida por el cliente y explica por qué elige nuestra propuesta frente a la competencia."
+      },
+      {
+        id: "q79", unit: "U6", topic: "U6.2", exam: 1,
+        q: "El modelo de negocio por suscripción de plataformas como Netflix o Spotify es un ejemplo de tendencia:",
+        options: [
+          "Económica (cómo las empresas generan valor y obtienen ingresos)",
+          "Ecológica",
+          "Demográfica",
+          "Legal"
+        ],
+        answer: 0,
+        exp: "Las tendencias económicas se relacionan con nuevas formas de generar valor y obtener ingresos (como la economía de suscripción: Netflix, Spotify)."
+      },
+      {
+        id: "q80", unit: "U6", topic: "U6.2", exam: 2,
+        q: "El auge de la Inteligencia Artificial (como OpenAI) transformando productos y la vida cotidiana representa una tendencia:",
+        options: [
+          "Tecnológica",
+          "Política",
+          "Geográfica",
+          "Tradicional"
+        ],
+        answer: 0,
+        exp: "Los avances como la IA (OpenAI) son tendencias tecnológicas que transforman empresas y hábitos cotidianos."
+      },
+      {
+        id: "q81", unit: "U6", topic: "U6.2", exam: 2,
+        q: "¿Cuáles son los 4 requisitos imprescindibles para que exista una verdadera Oportunidad de Negocio?",
+        options: [
+          "1. Existencia de necesidad/problema no resuelto, 2. Mercado objetivo identificado, 3. Capacidad de generar valor, 4. Viabilidad económica y técnica",
+          "1. Tener un local grande, 2. Pedir un préstamo bancario, 3. Crear un eslogan, 4. Contratar 10 empleados",
+          "1. Empatizar, 2. Definir, 3. Idear, 4. Prototipar",
+          "1. Equidad, 2. Cooperación, 3. Trabajo digno, 4. Reparto de riqueza"
+        ],
+        answer: 0,
+        exp: "Una oportunidad de negocio requiere: necesidad no resuelta, mercado objetivo identificado, capacidad de generar valor y viabilidad económica y técnica."
+      },
+      {
+        id: "q82", unit: "U6", topic: "U6.2", exam: 2,
+        q: "Las tendencias que se reflejan en cambios de preferencias, valores y percepciones de la sociedad se denominan:",
+        options: [
+          "Tendencias sociales y culturales",
+          "Tendencias financieras",
+          "Tendencias logísticas",
+          "Tendencias contables"
+        ],
+        answer: 0,
+        exp: "Los cambios en valores, percepciones y preferencias de consumo son tendencias sociales y culturales."
+      },
+      {
+        id: "q83", unit: "U6", topic: "U6.2", exam: 3,
+        q: "En el caso práctico de María y Carlos (movilidad sostenible en una ciudad de 500.000 habitantes), el hecho de que el 60% esté interesado en transporte sostenible es:",
+        options: [
+          "Una tendencia social/medioambiental y una oportunidad de mercado",
+          "Una amenaza de productos sustitutivos",
+          "Un problema de viabilidad técnica",
+          "Un organigrama circular"
+        ],
+        answer: 0,
+        exp: "El creciente interés ciudadano (60%) en opciones sostenibles refleja una tendencia social/ambiental que abre una oportunidad de negocio."
+      },
+      {
+        id: "q84", unit: "U6", topic: "U6.2", exam: 3,
+        q: "Si una idea de negocio resuelve un problema real y tiene clientes interesados, pero cuesta 10 veces más producirla de lo que el cliente puede pagar, falla el requisito de:",
+        options: [
+          "Viabilidad económica y técnica",
+          "Existencia de una necesidad",
+          "Identificación del mercado objetivo",
+          "Cultura empresarial"
+        ],
+        answer: 0,
+        exp: "Para ser una oportunidad de negocio real debe ser viable tanto técnica como económicamente."
+      },
+      {
+        id: "q85", unit: "U6", topic: "U6.2", exam: 0,
+        q: "¿Por qué es clave el concepto de 'Valor' para la supervivencia de una empresa?",
+        options: [
+          "Porque responde a la pregunta de por qué un cliente elige nuestro producto en vez del de la competencia",
+          "Porque determina el impuesto de sociedades",
+          "Porque fija el horario laboral de los empleados",
+          "Porque sustituye a la segmentación geográfica"
+        ],
+        answer: 0,
+        exp: "Si un producto no aporta valor percibido al cliente, este elegirá otra alternativa del mercado."
+      },
+      {
+        id: "q86", unit: "U6", topic: "U6.2", exam: 0,
+        q: "El aumento del uso de bicicletas eléctricas y servicios de car-sharing en las ciudades es un ejemplo de:",
+        options: [
+          "Tendencia de mercado hacia la movilidad sostenible",
+          "Estrategia indiferenciada",
+          "Poder de negociación de los proveedores",
+          "Organigrama funcional"
+        ],
+        answer: 0,
+        exp: "Refleja una dirección clara en la que se mueve el mercado urbano actual."
+      },
+      {
+        id: "q87", unit: "U6", topic: "U6.2", exam: 0,
+        q: "¿Qué implican las tendencias económicas en las empresas?",
+        options: [
+          "Cambios en cómo las empresas generan valor y obtienen ingresos, implicando cambios de organización",
+          "Únicamente la subida del precio de la electricidad",
+          "La desaparición de internet",
+          "El cierre de todos los comercios virtuales"
+        ],
+        answer: 0,
+        exp: "Las tendencias económicas transforman los modelos de ingresos y organización empresarial (como los modelos de suscripción)."
+      },
+      {
+        id: "q88", unit: "U6", topic: "U6.2", exam: 0,
+        q: "Tener un producto muy innovador pero sin un grupo de consumidores identificado incumple el requisito de:",
+        options: [
+          "Un mercado objetivo identificado",
+          "Viabilidad técnica",
+          "Sostenibilidad ecológica",
+          "Transparencia democrática"
+        ],
+        answer: 0,
+        exp: "Toda oportunidad de negocio requiere tener claramente identificado su mercado objetivo."
+      },
+      {
+        id: "q89", unit: "U6", topic: "U6.2", exam: 0,
+        q: "Cuando un cliente percibe que una app le ahorra tiempo y dinero en sus desplazamientos diarios, estamos ante:",
+        options: [
+          "Capacidad de generar valor para el cliente",
+          "Un producto sustitutivo negativo",
+          "Una barrera legal",
+          "Una debilidad interna"
+        ],
+        answer: 0,
+        exp: "El ahorro de tiempo y dinero aumenta la utilidad del servicio, es decir, su valor para el cliente."
+      },
+      {
+        id: "q90", unit: "U6", topic: "U6.2", exam: 0,
+        q: "¿Qué relación existe entre tendencias y oportunidades de negocio?",
+        options: [
+          "Analizar las tendencias permite detectar nuevas necesidades o carencias de los clientes donde emprender",
+          "Las tendencias impiden crear nuevas empresas",
+          "Son conceptos opuestos que nunca coinciden",
+          "Las tendencias solo afectan a empresas públicas"
+        ],
+        answer: 0,
+        exp: "Observar hacia dónde se mueve el mercado (tendencias) ayuda a descubrir oportunidades de negocio antes que la competencia."
+      },
+
+      // --- UNIDAD 6.3: MERCADO META Y SEGMENTACIÓN (15 preguntas) ---
+      {
+        id: "q91", unit: "U6", topic: "U6.3", exam: 1,
+        q: "¿Qué es el 'Mercado Meta'?",
+        options: [
+          "El grupo específico de consumidores o clientes potenciales a quienes una empresa dirige sus productos, servicios o estrategias de marketing",
+          "La totalidad de habitantes del planeta",
+          "El conjunto de proveedores de una empresa",
+          "El lugar físico donde se fabrica el producto"
+        ],
+        answer: 0,
+        exp: "El mercado meta es el público objetivo específico seleccionado por la empresa para dirigir su oferta."
+      },
+      {
+        id: "q92", unit: "U6", topic: "U6.3", exam: 1,
+        q: "¿En qué consiste la 'Segmentación del mercado'?",
+        options: [
+          "En dividir un mercado amplio y heterogéneo en grupos más pequeños y homogéneos",
+          "En subir los precios a todos los clientes por igual",
+          "En despedir a los trabajadores menos productivos",
+          "En cerrar las tiendas físicas para vender solo por teléfono"
+        ],
+        answer: 0,
+        exp: "Segmentar es dividir un mercado grande y diverso (heterogéneo) en subgrupos con características similares (homogéneos)."
+      },
+      {
+        id: "q93", unit: "U6", topic: "U6.3", exam: 1,
+        q: "¿Cuáles son los 4 criterios principales para dividir el mercado en segmentos?",
+        options: [
+          "Geográfica, Demográfica, Psicográfica y Conductual",
+          "Política, Económica, Social y Tecnológica",
+          "Empatía, Definición, Ideación y Prototipado",
+          "Producción, Ventas, Finanzas y Administración"
+        ],
+        answer: 0,
+        exp: "Los 4 criterios de segmentación son: Geográfica, Demográfica, Psicográfica y Conductual."
+      },
+      {
+        id: "q94", unit: "U6", topic: "U6.3", exam: 2,
+        q: "Si una empresa segmenta a sus clientes según su edad, género, nivel de ingresos y ocupación, está aplicando una segmentación:",
+        options: [
+          "Demográfica",
+          "Geográfica",
+          "Psicográfica",
+          "Conductual"
+        ],
+        answer: 0,
+        exp: "Variables como edad, sexo, renta, educación u ocupación pertenecen a la segmentación Demográfica."
+      },
+      {
+        id: "q95", unit: "U6", topic: "U6.3", exam: 2,
+        q: "Clasificar a los consumidores según su estilo de vida, personalidad, valores e intereses es una segmentación:",
+        options: [
+          "Psicográfica",
+          "Demográfica",
+          "Geográfica",
+          "Financiera"
+        ],
+        answer: 0,
+        exp: "La segmentación Psicográfica agrupa a las personas por su estilo de vida, valores y personalidad."
+      },
+      {
+        id: "q96", unit: "U6", topic: "U6.3", exam: 2,
+        q: "¿En qué consiste la 'Estrategia de Concentración' al seleccionar el mercado meta?",
+        options: [
+          "En centrar toda la estrategia de la empresa en 1 solo segmento específico",
+          "En vender exactamente el mismo producto a todo el mundo sin distinguir",
+          "En diseñar 10 productos distintos para 10 segmentos diferentes",
+          "En concentrar todas las fábricas en un único polígono industrial"
+        ],
+        answer: 0,
+        exp: "La estrategia de concentración enfoca todos los recursos de la empresa en un único segmento bien definido."
+      },
+      {
+        id: "q97", unit: "U6", topic: "U6.3", exam: 3,
+        q: "¿Qué diferencia la 'Estrategia de Diferenciación' de la 'Estrategia Indiferenciada'?",
+        options: [
+          "La diferenciada diseña ofertas adaptadas para varios segmentos distintos; la indiferenciada se dirige a todo el mercado por igual con una sola oferta",
+          "La diferenciada solo vende por internet y la indiferenciada solo en tiendas físicas",
+          "La indiferenciada es exclusiva para productos de lujo",
+          "No existe diferencia entre ambas estrategias"
+        ],
+        answer: 0,
+        exp: "Diferenciación = varios segmentos con ofertas específicas; Indiferenciada = todo el mercado tratado por igual."
+      },
+      {
+        id: "q98", unit: "U6", topic: "U6.3", exam: 3,
+        q: "¿Cuál es el orden correcto de los 4 pasos de la segmentación del mercado?",
+        options: [
+          "1. Definir mercado total → 2. Dividir en segmentos → 3. Evaluar segmentos → 4. Seleccionar mercado meta",
+          "1. Seleccionar mercado meta → 2. Evaluar segmentos → 3. Definir mercado total → 4. Dividir",
+          "1. Prototipar → 2. Testear → 3. Segmentar → 4. Vender",
+          "1. Evaluar segmentos → 2. Definir mercado total → 3. Seleccionar → 4. Dividir"
+        ],
+        answer: 0,
+        exp: "Primero se define el mercado total, luego se divide en segmentos, después se evalúan y finalmente se selecciona el mercado meta."
+      },
+      {
+        id: "q99", unit: "U6", topic: "U6.3", exam: 3,
+        q: "¿Qué orden siguen los 5 pasos para elaborar un Mapa de Empatía según el punto 3.2 de la Unidad 6?",
+        options: [
+          "1. Definir al usuario → 2. Reunir información → 3. Rellenar el mapa → 4. Analizar patrones → 5. Priorizar necesidades",
+          "1. Rellenar el mapa → 2. Definir al usuario → 3. Priorizar necesidades → 4. Reunir información → 5. Analizar",
+          "1. Priorizar necesidades → 2. Vender el producto → 3. Rellenar el mapa → 4. Definir usuario → 5. Cerrar",
+          "1. Reunir información → 2. Analizar patrones → 3. Definir usuario → 4. Priorizar → 5. Rellenar"
+        ],
+        answer: 0,
+        exp: "Los 5 pasos son: Definir al usuario, Reunir información, Rellenar el mapa, Analizar patrones y Priorizar necesidades."
+      },
+      {
+        id: "q100", unit: "U6", topic: "U6.3", exam: 0,
+        q: "Dividir a los clientes según la frecuencia con la que usan una aplicación, su lealtad a la marca o los beneficios que buscan es segmentación:",
+        options: [
+          "Conductual",
+          "Geográfica",
+          "Demográfica",
+          "Política"
+        ],
+        answer: 0,
+        exp: "Los hábitos de compra, frecuencia de uso y lealtad corresponden a la segmentación Conductual."
+      },
+      {
+        id: "q101", unit: "U6", topic: "U6.3", exam: 0,
+        q: "Dividir el mercado por países, regiones, tamaño de ciudad o clima es una segmentación:",
+        options: [
+          "Geográfica",
+          "Psicográfica",
+          "Conductual",
+          "Demográfica"
+        ],
+        answer: 0,
+        exp: "La ubicación física, región, ciudad o clima constituyen la segmentación Geográfica."
+      },
+      {
+        id: "q102", unit: "U6", topic: "U6.3", exam: 0,
+        q: "En el paso 3 de la segmentación ('Evaluar los segmentos identificados'), ¿qué preguntas clave debemos hacernos?",
+        options: [
+          "¿Qué segmento está creciendo?, ¿es posible llegar a otro segmento? y ¿se alinea con los objetivos de la empresa?",
+          "¿De qué color será el logotipo? y ¿cuántos folios gastará administración?",
+          "¿Quién es el presidente del gobierno? y ¿cuál es el tipo de interés?",
+          "¿Cuántos sensores compró Nokia en 2007?"
+        ],
+        answer: 0,
+        exp: "Al evaluar segmentos analizamos su crecimiento, accesibilidad y alineación con los objetivos empresariales."
+      },
+      {
+        id: "q103", unit: "U6", topic: "U6.3", exam: 0,
+        q: "Una startup con presupuesto muy limitado lanza una app de ahorro energético enfocada exclusivamente en jóvenes universitarios que comparten piso. ¿Qué estrategia de mercado meta usa?",
+        options: [
+          "Estrategia de concentración (1 solo segmento)",
+          "Estrategia indiferenciada (todo el mercado)",
+          "Estrategia de diferenciación masiva",
+          "Estrategia de monopolio estatal"
+        ],
+        answer: 0,
+        exp: "Al centrarse en un único nicho o segmento concreto, aplica una estrategia de concentración."
+      },
+      {
+        id: "q104", unit: "U6", topic: "U6.3", exam: 0,
+        q: "Una marca de ropa crea una línea deportiva para jóvenes, otra ejecutiva para adultos y otra infantil para familias. ¿Qué estrategia de selección de mercado meta utiliza?",
+        options: [
+          "Estrategia de diferenciación (varios segmentos con ofertas adaptadas)",
+          "Estrategia de concentración (1 solo segmento)",
+          "Estrategia indiferenciada",
+          "Pensamiento tradicional cerrado"
+        ],
+        answer: 0,
+        exp: "Atender a varios segmentos ofreciendo productos adaptados a cada uno es la estrategia de diferenciación."
+      },
+      {
+        id: "q105", unit: "U6", topic: "U6.3", exam: 0,
+        q: "¿Cuál es el punto de partida (Paso 1) antes de dividir el mercado en segmentos?",
+        options: [
+          "Definir el mercado total (todos los clientes potenciales)",
+          "Diseñar la papelería corporativa",
+          "Seleccionar el mercado meta",
+          "Calcular el precio de equilibrio"
+        ],
+        answer: 0,
+        exp: "El primer paso es definir el mercado total que engloba a todos los clientes potenciales."
+      }
+    ];
+
+    // =========================================================================
+    // 3. DATOS PARA FLASHCARDS Y GLOSARIO
+    // =========================================================================
+    const FLASHCARDS_DATA = [
+      { unit: "U5", front: "¿Cuáles son las 4 etapas del modelo empresarial tradicional?", back: "1. Definición de la idea → 2. Elaboración conceptual → 3. Ejecución/puesta en marcha → 4. Búsqueda de clientes." },
+      { unit: "U5", front: "¿Qué es el Pensamiento Inverso empresarial?", back: "Abordar un problema comenzando desde el resultado o meta deseada (necesidad real) y trabajando hacia atrás para identificar los pasos necesarios." },
+      { unit: "U5", front: "Caso Nokia vs. Waze (2007): ¿Cuál fue la clave?", back: "Nokia gastó >8,1M$ en sensores caros; Waze aplicó pensamiento inverso usando gratis los GPS de los móviles de sus usuarios." },
+      { unit: "U5", front: "¿Cuáles son las 4 ventajas del Pensamiento Inverso?", back: "1. Claridad en los objetivos, 2. Anticipación de obstáculos, 3. Enfoque creativo e innovador, 4. Distribución eficiente de recursos." },
+      { unit: "U5", front: "¿Qué es el Precio de Equilibrio?", back: "El punto del mercado (físico o virtual) donde se igualan la Oferta y la Demanda." },
+      { unit: "U5", front: "¿Cuáles son los 5 Departamentos de la empresa?", back: "Producción, Ventas, Finanzas, Recursos Humanos y Administración (planificar, organizar, ejecutar y controlar)." },
+      { unit: "U5", front: "¿Qué 4 tipos de Organigrama aparecen en la U5?", back: "Funcional, Horizontal, Vertical y Circular." },
+      { unit: "U5", front: "¿Qué 6 elementos proyectan la Imagen Corporativa?", back: "1. Nombre, 2. Logotipo, 3. Eslogan, 4. Colores, 5. Página web y 6. Papelería." },
+      { unit: "U5", front: "¿Qué son los Productos Sustitutivos y cómo combatirlos?", back: "Productos que cubren la misma necesidad aunque sean distintos. Estrategias: Diferenciación, Liderazgo en costes y Segmentación." },
+      { unit: "U5", front: "¿Cuáles son las 5 Fuerzas de Porter (Microentorno)?", back: "1. Nuevos competidores, 2. Poder de clientes, 3. Productos sustitutivos, 4. Poder de proveedores, 5. Rivalidad entre competidores." },
+      { unit: "U5", front: "¿Qué significan las siglas PESTEL (Macroentorno)?", back: "Político, Económico, Social, Tecnológico, Ecológico y Legal." },
+      { unit: "U5", front: "¿Qué cruza la Matriz del Bien Común 5.0?", back: "5 Grupos de Interés (Proveedores, Propietarios/Financieros, Trabajadores, Clientes/Empresas, Entorno social) x 4 Valores (Dignidad humana, Solidaridad/Justicia, Sostenibilidad, Transparencia)." },
+      { unit: "U5", front: "¿Cuáles son los 6 principios de la Economía Social y Solidaria?", back: "Equidad, Trabajo digno, Sostenibilidad ecológica, Cooperación, Reparto de la riqueza y Compromiso con el entorno." },
+      { unit: "U6", front: "¿Cuáles son las 5 fases del Design Thinking en orden?", back: "1. Empatizar → 2. Definir → 3. Idear → 4. Prototipar → 5. Probar (Testear)." },
+      { unit: "U6", front: "¿Qué 6 apartados tiene un Mapa de Empatía?", back: "¿Qué piensa y siente?, ¿Qué oye?, ¿Qué ve?, ¿Qué dice y hace?, Esfuerzos (miedos/frustraciones) y Resultados (deseos/éxito)." },
+      { unit: "U6", front: "Diferencia entre Journey Map y Storyboard", back: "Journey Map: analiza la experiencia del cliente fase a fase (puntos positivos y STOP). Storyboard: viñetas tipo cómic sobre el impacto de la solución en la vida del usuario." },
+      { unit: "U6", front: "Define: Tendencia, Oportunidad de mercado y Valor", back: "Tendencia: dirección del mercado en un tiempo. Oportunidad: necesidad/carencia del cliente. Valor: utilidad del producto que explica por qué el cliente lo elige." },
+      { unit: "U6", front: "¿Cuáles son los 4 requisitos de una Oportunidad de Negocio?", back: "1. Necesidad/problema no resuelto, 2. Mercado objetivo identificado, 3. Capacidad de generar valor, 4. Viabilidad económica y técnica." },
+      { unit: "U6", front: "¿Cuáles son los 4 criterios de Segmentación del mercado?", back: "Geográfica, Demográfica, Psicográfica y Conductual." },
+      { unit: "U6", front: "Las 3 estrategias de selección del Mercado Meta", back: "Concentración (1 solo segmento), Diferenciación (varios segmentos con ofertas adaptadas) e Indiferenciada (todo el mercado por igual)." },
+      { unit: "U6", front: "¿Cuáles son los 5 pasos para elaborar un Mapa de Empatía?", back: "1. Definir al usuario → 2. Reunir información → 3. Rellenar el mapa → 4. Analizar patrones → 5. Priorizar necesidades." }
+    ];
+
+    const GLOSSARY_DATA = [
+      { term: "Pensamiento Inverso", unit: "U5.1", def: "Enfoque creativo y estratégico que parte del resultado o meta deseada y trabaja hacia atrás para identificar los pasos necesarios." },
+      { term: "Mercado", unit: "U5.2", def: "Espacio de intercambio, físico o virtual, donde compradores y vendedores interactúan para cambiar bienes, servicios o recursos." },
+      { term: "Precio de Equilibrio", unit: "U5.2", def: "Precio al que coinciden la cantidad ofrecida por los vendedores y la demandada por los compradores." },
+      { term: "Sistema Abierto (Empresa)", unit: "U5.2", def: "Conjunto de elementos interrelacionados que interactúa con el entorno exterior, genera sinergias entre subsistemas y se autocontrola." },
+      { term: "Organigrama", unit: "U5.2", def: "Representación gráfica de la empresa que muestra su jerarquía, dependencia, canales de comunicación y competencias (Funcional, Horizontal, Vertical, Circular)." },
+      { term: "Cultura Empresarial", unit: "U5.2", def: "Conjunto de valores, creencias, normas, comportamientos, símbolos y tradiciones que definen la identidad interna de la empresa." },
+      { term: "Imagen Corporativa", unit: "U5.2", def: "Proyección exterior de la cultura empresarial (cómo nos ven). Incluye nombre, logotipo, eslogan, colores, web y papelería." },
+      { term: "Microentorno (Entorno Específico)", unit: "U5.3", def: "Factores cercanos que afectan directamente al sector: competencia, productos sustitutivos, clientes, proveedores e intermediarios." },
+      { term: "Productos Sustitutivos", unit: "U5.3", def: "Bienes o servicios diferentes que cubren la misma necesidad del consumidor." },
+      { term: "5 Fuerzas de Porter", unit: "U5.3", def: "Modelo para analizar la competitividad del sector: nuevos competidores, poder de clientes, sustitutivos, poder de proveedores y rivalidad actual." },
+      { term: "Análisis PESTEL", unit: "U5.3", def: "Herramienta para analizar el macroentorno general: Político, Económico, Social, Tecnológico, Ecológico y Legal." },
+      { term: "Matriz del Bien Común 5.0", unit: "U5.4", def: "Tabla que evalúa el compromiso ético cruzando 5 grupos de interés con 4 valores (Dignidad humana, Solidaridad/Justicia, Sostenibilidad y Transparencia)." },
+      { term: "Design Thinking", unit: "U6.1", def: "Metodología centrada en la persona para resolver problemas complejos combinando lógica, intuición, investigación y experimentación." },
+      { term: "Mapa de Empatía", unit: "U6.1", def: "Herramienta para comprender al cliente analizando qué piensa/siente, oye, ve, dice/hace, sus esfuerzos y resultados." },
+      { term: "Journey Map", unit: "U6.1", def: "Mapa visual de la experiencia del cliente paso a paso durante un proceso, señalando puntos positivos y negativos (STOP)." },
+      { term: "Storyboard", unit: "U6.1", def: "Secuencia de viñetas gráficas que muestra cómo impacta la solución en la vida cotidiana del usuario." },
+      { term: "Tendencia", unit: "U6.2", def: "Dirección particular en la que se mueve el mercado en un intervalo de tiempo (económica, tecnológica o social/cultural)." },
+      { term: "Oportunidad de Mercado", unit: "U6.2", def: "Necesidad, carencia, deseo o interés no resuelto que tiene un cliente." },
+      { term: "Valor", unit: "U6.2", def: "Grado de utilidad que tiene un producto para un cliente; explica por qué elige un producto en vez de otro." },
+      { term: "Mercado Meta", unit: "U6.3", def: "Grupo específico de consumidores potenciales a quienes la empresa dirige sus productos y estrategias." },
+      { term: "Segmentación del Mercado", unit: "U6.3", def: "Dividir un mercado amplio y heterogéneo en grupos más pequeños y homogéneos (Geográfica, Demográfica, Psicográfica, Conductual)." }
+    ];
+
+    // =========================================================================
+    // 4. ESTADO GLOBAL Y PERSISTENCIA EN LOCALSTORAGE
+    // =========================================================================
+    const STORAGE_KEY = "ipe2_study_state_v1";
+    let appState = {
+      theme: "dark",
+      studiedTopics: [],      // ej. ["U5.1", "U6.1"]
+      masteredQuestions: [],  // IDs acertados
+      failedQuestions: [],    // IDs fallados pendientes de repaso
+      examScores: {}          // { 1: 8.3, 2: 7.0 }
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          appState = { ...appState, ...JSON.parse(saved) };
+        }
+      } catch (e) {
+        console.warn("No se pudo cargar localStorage:", e);
+      }
+      applyTheme();
+      updateBadgesAndStats();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn("No se pudo guardar en localStorage:", e);
+      }
+      updateBadgesAndStats();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById("theme-icon");
+      if (appState.theme === "dark") {
+        html.classList.add("dark");
+        if (icon) icon.textContent = "☀️";
+      } else {
+        html.classList.remove("dark");
+        if (icon) icon.textContent = "🌙";
+      }
+    }
+
+    function toggleTheme() {
+      appState.theme = appState.theme === "dark" ? "light" : "dark";
+      applyTheme();
+      saveState();
+    }
+
+    function showToast(msg, type = "info") {
+      const container = document.getElementById("toast-container");
+      const el = document.createElement("div");
+      const colors = type === "success"
+        ? "bg-emerald-600 text-white"
+        : type === "error"
+          ? "bg-rose-600 text-white"
+          : "bg-slate-900 text-white border border-slate-700";
+      el.className = `${colors} px-4 py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-semibold animate-fade-in pointer-events-auto`;
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transition = "opacity 0.3s";
+        setTimeout(() => el.remove(), 300);
+      }, 2600);
+    }
+
+    function updateBadgesAndStats() {
+      // Contador dominadas
+      const masteredEl = document.getElementById("header-mastered-count");
+      if (masteredEl) {
+        masteredEl.textContent = `${appState.masteredQuestions.length}/${QUESTIONS_BANK.length}`;
+      }
+
+      // Badges de fallos
+      const fCount = appState.failedQuestions.length;
+      ["badge-fallos-desktop", "badge-fallos-mob"].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) {
+          b.textContent = fCount;
+          b.classList.toggle("hidden", fCount === 0);
+        }
+      });
+
+      // Progreso temario
+      const totalTopics = TEMARIO_DATA.length;
+      const doneTopics = appState.studiedTopics.length;
+      const pct = Math.round((doneTopics / totalTopics) * 100);
+      const pText = document.getElementById("study-progress-text");
+      const pBar = document.getElementById("study-progress-bar");
+      if (pText) pText.textContent = `${doneTopics} de ${totalTopics} puntos marcados como repasados (${pct}%)`;
+      if (pBar) pBar.style.width = `${pct}%`;
+
+      // Notas exámenes
+      [1, 2, 3].forEach(num => {
+        const scEl = document.getElementById(`score-exam-${num}`);
+        if (scEl && appState.examScores[num] !== undefined) {
+          const val = appState.examScores[num];
+          scEl.textContent = `Mejor nota: ${val.toFixed(1)}/10`;
+          scEl.className = `text-xs font-extrabold ${val >= 5 ? "text-emerald-500" : "text-rose-500"}`;
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. NAVEGACIÓN ENTRE PESTAÑAS
+    // =========================================================================
+    let currentTab = "temario";
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.add("hidden"));
+      const target = document.getElementById(`view-${tabId}`);
+      if (target) target.classList.remove("hidden");
+
+      // Actualizar botones activos desktop
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.className = active
+          ? "nav-btn px-3.5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+          : "nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+      });
+
+      // Actualizar botones activos móvil
+      document.querySelectorAll(".nav-btn-mob").forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.className = active
+          ? "nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white"
+          : "nav-btn-mob shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400";
+      });
+
+      if (tabId === "fallos") renderFallosSection();
+      if (tabId === "extra") renderGlossary();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // =========================================================================
+    // 6. RENDERIZADO DEL TEMARIO DE REPASO
+    // =========================================================================
+    let currentUnitFilter = "all";
+
+    function filterTemario(unit) {
+      currentUnitFilter = unit;
+      document.querySelectorAll(".unit-filter-btn").forEach(btn => {
+        btn.className = "unit-filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition";
+      });
+      const activeBtn = document.getElementById(`btn-unit-${unit}`);
+      if (activeBtn) {
+        activeBtn.className = "unit-filter-btn px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-sm transition";
+      }
+      renderTemario();
+    }
+
+    function toggleTopicStudied(topicId) {
+      const idx = appState.studiedTopics.indexOf(topicId);
+      if (idx === -1) {
+        appState.studiedTopics.push(topicId);
+        showToast(`Punto ${topicId} marcado como repasado ✓`, "success");
+      } else {
+        appState.studiedTopics.splice(idx, 1);
+      }
+      saveState();
+      renderTemario();
+    }
+
+    function renderTemario() {
+      const container = document.getElementById("temario-content");
+      const filtered = TEMARIO_DATA.filter(item => currentUnitFilter === "all" || item.unit === currentUnitFilter);
+
+      let html = "";
+      let lastUnitTitle = "";
+
+      filtered.forEach(topic => {
+        if (topic.unitTitle !== lastUnitTitle) {
+          lastUnitTitle = topic.unitTitle;
+          const isU5 = topic.unit === "u5";
+          html += `
+            <div class="flex items-center gap-3 pt-2">
+              <div class="h-8 w-1.5 rounded-full ${isU5 ? "bg-indigo-500" : "bg-emerald-500"}"></div>
+              <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">${topic.unitTitle}</h2>
+            </div>
+          `;
+        }
+
+        const isStudied = appState.studiedTopics.includes(topic.id);
+        const accentBorder = topic.badgeColor === "indigo" ? "border-indigo-500/30" : "border-emerald-500/30";
+        const badgeBg = topic.badgeColor === "indigo" ? "bg-indigo-500/15 text-indigo-500" : "bg-emerald-500/15 text-emerald-500";
+
+        html += `
+          <article class="bg-white dark:bg-slate-900 border ${isStudied ? "border-emerald-500/50" : accentBorder} rounded-2xl p-5 sm:p-6 shadow-sm space-y-5 transition-all">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold ${badgeBg}">${topic.id}</span>
+                  ${isStudied ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-500">✓ Repasado</span>' : ''}
+                </div>
+                <h3 class="text-lg sm:text-xl font-extrabold">${topic.title}</h3>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">${topic.summary}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button onclick="switchTab('tests'); startTopicQuiz('${topic.id}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">
+                  🎯 Hacer Test
+                </button>
+                <button onclick="toggleTopicStudied('${topic.id}')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition ${isStudied ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-600 hover:text-white'}">
+                  ${isStudied ? '✓ Estudiado' : 'Marcar repasado'}
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              ${topic.blocks.map(block => renderTemarioBlock(block)).join("")}
+            </div>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderTemarioBlock(block) {
+      if (block.type === "highlight") {
+        return `
+          <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+            <h4 class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400 mb-1">${block.heading}</h4>
+            <p class="text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-200">${block.text}</p>
+          </div>
+        `;
+      }
+      if (block.type === "case") {
+        return `
+          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25">
+            <h4 class="text-sm font-extrabold text-amber-600 dark:text-amber-400 mb-1">💡 ${block.heading}</h4>
+            <p class="text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-200">${block.text}</p>
+          </div>
+        `;
+      }
+      if (block.type === "steps") {
+        return `
+          <div>
+            <h4 class="text-sm font-extrabold mb-2.5 text-slate-800 dark:text-slate-200">${block.heading}</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              ${block.items.map(it => `
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <div class="font-bold text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 mb-1">${it.title}</div>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${it.desc}</p>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+      if (block.type === "grid4" || block.type === "grid5") {
+        const cols = block.type === "grid5" ? "lg:grid-cols-5" : "lg:grid-cols-4";
+        return `
+          <div>
+            <h4 class="text-sm font-extrabold mb-2.5 text-slate-800 dark:text-slate-200">${block.heading}</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 ${cols} gap-3">
+              ${block.items.map(it => `
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                  <div class="font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 mb-1">${it.title}</div>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${it.desc}</p>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+      // Por defecto: list
+      return `
+        <div>
+          <h4 class="text-sm font-extrabold mb-2 text-slate-800 dark:text-slate-200">${block.heading}</h4>
+          <ul class="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            ${block.items.map(li => `
+              <li class="flex items-start gap-2.5">
+                <span class="text-indigo-500 font-bold mt-0.5">•</span>
+                <span class="leading-relaxed">${li}</span>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 7. MOTOR DE TESTS POR PUNTOS Y UNIDADES (CORRECCIÓN INMEDIATA)
+    // =========================================================================
+    let topicQuizState = {
+      title: "",
+      questions: [],
+      currentIndex: 0,
+      selectedOption: null,
+      score: 0,
+      wrongIds: []
+    };
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startTopicQuiz(filterCode, customQuestions = null) {
+      let pool = [];
+      let title = "";
+
+      if (customQuestions) {
+        pool = customQuestions;
+        title = "Repaso de Preguntas Falladas";
+      } else if (filterCode === "U5_ALL") {
+        pool = shuffleArray(QUESTIONS_BANK.filter(q => q.unit === "U5")).slice(0, 20);
+        title = "Test Global · Unidad 5 Completa";
+      } else if (filterCode === "U6_ALL") {
+        pool = shuffleArray(QUESTIONS_BANK.filter(q => q.unit === "U6")).slice(0, 20);
+        title = "Test Global · Unidad 6 Completa";
+      } else {
+        pool = shuffleArray(QUESTIONS_BANK.filter(q => q.topic === filterCode));
+        const topicObj = TEMARIO_DATA.find(t => t.id === filterCode);
+        title = topicObj ? `Test ${topicObj.title}` : `Test ${filterCode}`;
+      }
+
+      if (pool.length === 0) {
+        showToast("No hay preguntas disponibles para esta selección.", "error");
+        return;
+      }
+
+      // Mezclar opciones de cada pregunta manteniendo trazabilidad de la respuesta correcta
+      const prepared = pool.map(q => {
+        const mappedOptions = q.options.map((optText, idx) => ({
+          text: optText,
+          isCorrect: idx === q.answer
+        }));
+        const shuffledOpts = shuffleArray(mappedOptions);
+        return {
+          ...q,
+          shuffledOptions: shuffledOpts,
+          correctIndex: shuffledOpts.findIndex(o => o.isCorrect)
+        };
+      });
+
+      topicQuizState = {
+        title,
+        questions: prepared,
+        currentIndex: 0,
+        selectedOption: null,
+        score: 0,
+        wrongIds: []
+      };
+
+      const arena = document.getElementById("topic-quiz-arena");
+      arena.classList.remove("hidden");
+      renderTopicQuizQuestion();
+      arena.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderTopicQuizQuestion() {
+      const arena = document.getElementById("topic-quiz-arena");
+      const { title, questions, currentIndex, selectedOption, score } = topicQuizState;
+      const q = questions[currentIndex];
+      const total = questions.length;
+      const pct = Math.round(((currentIndex) / total) * 100);
+
+      arena.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 border-2 border-indigo-500/30 rounded-2xl p-5 sm:p-7 shadow-lg space-y-6 animate-fade-in">
+          <!-- Cabecera del Test -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-500">${q.topic} · Pregunta ${currentIndex + 1} de ${total}</span>
+              <h3 class="text-lg font-extrabold mt-0.5">${title}</h3>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-500">Aciertos: ${score}</span>
+              <button onclick="closeTopicQuiz()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white transition">✕ Cerrar</button>
+            </div>
+          </div>
+
+          <!-- Barra de progreso -->
+          <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-indigo-600 h-full transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+
+          <!-- Enunciado -->
+          <div class="text-base sm:text-lg font-bold leading-snug text-slate-900 dark:text-white">
+            ${q.q}
+          </div>
+
+          <!-- Opciones -->
+          <div class="space-y-3">
+            ${q.shuffledOptions.map((opt, idx) => {
+              const letters = ["A", "B", "C", "D"];
+              let btnStyle = "border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 hover:border-indigo-500";
+              let badgeStyle = "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300";
+
+              if (selectedOption !== null) {
+                if (idx === q.correctIndex) {
+                  btnStyle = "border-emerald-500 bg-emerald-500/15 text-emerald-950 dark:text-emerald-100";
+                  badgeStyle = "bg-emerald-500 text-white";
+                } else if (idx === selectedOption) {
+                  btnStyle = "border-rose-500 bg-rose-500/15 text-rose-950 dark:text-rose-100";
+                  badgeStyle = "bg-rose-500 text-white";
+                } else {
+                  btnStyle = "border-slate-200 dark:border-slate-800 opacity-50";
+                }
+              }
+
+              return `
+                <button ${selectedOption !== null ? "disabled" : ""} onclick="selectTopicOption(${idx})" class="w-full text-left p-4 rounded-xl border-2 ${btnStyle} transition flex items-start gap-3.5">
+                  <span class="w-7 h-7 rounded-lg ${badgeStyle} font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">${letters[idx]}</span>
+                  <span class="text-sm sm:text-base font-medium leading-snug">${opt.text}</span>
+                </button>
+              `;
+            }).join("")}
+          </div>
+
+          <!-- Explicación inmediata tras responder -->
+          ${selectedOption !== null ? `
+            <div class="p-4 rounded-xl ${selectedOption === q.correctIndex ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'} animate-fade-in">
+              <div class="font-extrabold text-sm mb-1 ${selectedOption === q.correctIndex ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                ${selectedOption === q.correctIndex ? '✅ ¡Correcto!' : '❌ Respuesta incorrecta'}
+              </div>
+              <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">${q.exp}</p>
+            </div>
+            <div class="flex justify-end">
+              <button onclick="nextTopicQuestion()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-md">
+                ${currentIndex + 1 < total ? 'Siguiente Pregunta →' : 'Ver Resultado Final 🏆'}
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function selectTopicOption(idx) {
+      if (topicQuizState.selectedOption !== null) return;
+      topicQuizState.selectedOption = idx;
+      const q = topicQuizState.questions[topicQuizState.currentIndex];
+
+      if (idx === q.correctIndex) {
+        topicQuizState.score++;
+        if (!appState.masteredQuestions.includes(q.id)) {
+          appState.masteredQuestions.push(q.id);
+        }
+        // Si estaba en falladas y ahora la acierta, la quitamos de falladas
+        const fIdx = appState.failedQuestions.indexOf(q.id);
+        if (fIdx !== -1) appState.failedQuestions.splice(fIdx, 1);
+      } else {
+        topicQuizState.wrongIds.push(q.id);
+        if (!appState.failedQuestions.includes(q.id)) {
+          appState.failedQuestions.push(q.id);
+        }
+      }
+      saveState();
+      renderTopicQuizQuestion();
+    }
+
+    function nextTopicQuestion() {
+      if (topicQuizState.currentIndex + 1 < topicQuizState.questions.length) {
+        topicQuizState.currentIndex++;
+        topicQuizState.selectedOption = null;
+        renderTopicQuizQuestion();
+      } else {
+        renderTopicQuizSummary();
+      }
+    }
+
+    function renderTopicQuizSummary() {
+      const arena = document.getElementById("topic-quiz-arena");
+      const { title, questions, score, wrongIds } = topicQuizState;
+      const total = questions.length;
+      const grade = ((score / total) * 10).toFixed(1);
+      const passed = parseFloat(grade) >= 5;
+
+      arena.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 border-2 ${passed ? 'border-emerald-500/40' : 'border-rose-500/40'} rounded-2xl p-6 sm:p-8 text-center space-y-6 animate-fade-in">
+          <div class="w-16 h-16 mx-auto rounded-2xl ${passed ? 'bg-emerald-500/15 text-emerald-500' : 'bg-rose-500/15 text-rose-500'} flex items-center justify-center text-3xl">
+            ${passed ? '🎉' : '📚'}
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${title}</span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold mt-1">Nota: ${grade} / 10</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">
+              Has acertado <strong>${score}</strong> de <strong>${total}</strong> preguntas.
+              ${passed ? '¡Vas por muy buen camino para aprobar mañana!' : 'Repasa las explicaciones y vuelve a intentarlo.'}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-3">
+            ${wrongIds.length > 0 ? `
+              <button onclick="repeatFailedInTopicQuiz()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold transition">
+                🔄 Repetir solo las ${wrongIds.length} falladas
+              </button>
+            ` : ''}
+            <button onclick="closeTopicQuiz()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">
+              Elegir otro tema
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function repeatFailedInTopicQuiz() {
+      const failedObjs = QUESTIONS_BANK.filter(q => topicQuizState.wrongIds.includes(q.id));
+      startTopicQuiz("RETRY", failedObjs);
+    }
+
+    function closeTopicQuiz() {
+      document.getElementById("topic-quiz-arena").classList.add("hidden");
+    }
+
+    // =========================================================================
+    // 8. SIMULACROS DE EXAMEN DE 30 PREGUNTAS (MODO EXAMEN REAL)
+    // =========================================================================
+    let examState = {
+      modelId: null,
+      questions: [],
+      userAnswers: [], // array de índices elegidos o null
+      flagged: [],     // array booleano para marcar dudosas
+      currentIndex: 0,
+      submitted: false,
+      timerSeconds: 0,
+      timerInterval: null
+    };
+
+    function startMockExam(modelId) {
+      let pool = [];
+      if (modelId === "random") {
+        // 15 de U5 y 15 de U6 aleatorias
+        const u5Pool = shuffleArray(QUESTIONS_BANK.filter(q => q.unit === "U5")).slice(0, 15);
+        const u6Pool = shuffleArray(QUESTIONS_BANK.filter(q => q.unit === "U6")).slice(0, 15);
+        pool = shuffleArray([...u5Pool, ...u6Pool]);
+      } else {
+        // Cada modelo 1, 2, 3 tiene 30 preguntas asignadas (15 U5 + 15 U6)
+        pool = QUESTIONS_BANK.filter(q => q.exam === modelId);
+        // Seguridad por si faltara alguna hasta 30
+        if (pool.length < 30) {
+          const extra = shuffleArray(QUESTIONS_BANK.filter(q => q.exam !== modelId)).slice(0, 30 - pool.length);
+          pool = [...pool, ...extra];
+        }
+        pool = shuffleArray(pool).slice(0, 30);
+      }
+
+      const prepared = pool.map(q => {
+        const mapped = q.options.map((t, i) => ({ text: t, isCorrect: i === q.answer }));
+        const shuf = shuffleArray(mapped);
+        return {
+          ...q,
+          shuffledOptions: shuf,
+          correctIndex: shuf.findIndex(o => o.isCorrect)
+        };
+      });
+
+      const mins = parseInt(document.getElementById("exam-timer-select").value, 10) || 0;
+      if (examState.timerInterval) clearInterval(examState.timerInterval);
+
+      examState = {
+        modelId,
+        questions: prepared,
+        userAnswers: new Array(30).fill(null),
+        flagged: new Array(30).fill(false),
+        currentIndex: 0,
+        submitted: false,
+        timerSeconds: mins * 60,
+        timerInterval: null
+      };
+
+      document.getElementById("exam-lobby").classList.add("hidden");
+      const arena = document.getElementById("exam-arena");
+      arena.classList.remove("hidden");
+
+      if (mins > 0) {
+        examState.timerInterval = setInterval(() => {
+          examState.timerSeconds--;
+          const timerDisplay = document.getElementById("exam-clock-display");
+          if (timerDisplay) timerDisplay.textContent = formatSeconds(examState.timerSeconds);
+          if (examState.timerSeconds <= 0) {
+            clearInterval(examState.timerInterval);
+            showToast("¡Tiempo agotado! Corrigiendo examen...", "error");
+            submitMockExam();
+          }
+        }, 1000);
+      }
+
+      renderExamArena();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function formatSeconds(sec) {
+      if (sec <= 0) return "00:00";
+      const m = Math.floor(sec / 60).toString().padStart(2, "0");
+      const s = (sec % 60).toString().padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function renderExamArena() {
+      const arena = document.getElementById("exam-arena");
+      if (examState.submitted) {
+        renderExamResults();
+        return;
+      }
+
+      const { modelId, questions, userAnswers, flagged, currentIndex, timerSeconds } = examState;
+      const q = questions[currentIndex];
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      const titleLabel = modelId === "random" ? "Examen Aleatorio" : `Simulacro Oficial · Modelo ${modelId}`;
+
+      arena.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+          <!-- Columna Principal: Pregunta -->
+          <div class="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div>
+                <span class="text-xs font-extrabold text-indigo-500 uppercase">${titleLabel}</span>
+                <h3 class="text-lg font-extrabold">Pregunta ${currentIndex + 1} de 30 <span class="text-xs font-normal text-slate-400">(${q.topic})</span></h3>
+              </div>
+              <div class="flex items-center gap-2">
+                ${timerSeconds > 0 ? `
+                  <div class="px-3 py-1.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 font-mono font-bold text-sm">
+                    ⏱️ <span id="exam-clock-display">${formatSeconds(timerSeconds)}</span>
+                  </div>
+                ` : ''}
+                <button onclick="toggleFlagExamQuestion()" class="px-3 py-1.5 rounded-xl text-xs font-bold border transition ${flagged[currentIndex] ? 'bg-amber-500 text-white border-amber-500' : 'border-slate-300 dark:border-slate-700 text-slate-500'}">
+                  ${flagged[currentIndex] ? '🚩 Dudosa' : '🏳️ Marcar duda'}
+                </button>
+              </div>
+            </div>
+
+            <div class="text-base sm:text-lg font-bold leading-snug">
+              ${q.q}
+            </div>
+
+            <div class="space-y-3">
+              ${q.shuffledOptions.map((opt, idx) => {
+                const letters = ["A", "B", "C", "D"];
+                const isSelected = userAnswers[currentIndex] === idx;
+                return `
+                  <button onclick="selectExamOption(${idx})" class="w-full text-left p-4 rounded-xl border-2 transition flex items-start gap-3.5 ${isSelected ? 'border-indigo-600 bg-indigo-500/10' : 'border-slate-200 dark:border-slate-800 hover:border-indigo-400 bg-slate-50/50 dark:bg-slate-950/50'}">
+                    <span class="w-7 h-7 rounded-lg font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-800'}">${letters[idx]}</span>
+                    <span class="text-sm sm:text-base font-medium leading-snug">${opt.text}</span>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+
+            <!-- Navegación Anterior / Siguiente -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+              <button ${currentIndex === 0 ? "disabled" : ""} onclick="goExamQuestion(${currentIndex - 1})" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 disabled:opacity-40 text-sm font-bold transition">
+                ← Anterior
+              </button>
+              ${currentIndex < 29 ? `
+                <button onclick="goExamQuestion(${currentIndex + 1})" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">
+                  Siguiente →
+                </button>
+              ` : `
+                <button onclick="submitMockExam()" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold transition shadow-md">
+                  Entregar Examen ✓
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Columna Lateral: Mapa de 30 Preguntas -->
+          <div class="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-5">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-extrabold">Navegador (30 preguntas)</span>
+                <span class="text-xs font-bold text-indigo-500">${answeredCount}/30 resp.</span>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                ${questions.map((_, i) => {
+                  const isCurr = i === currentIndex;
+                  const isAns = userAnswers[i] !== null;
+                  const isFlag = flagged[i];
+                  let cls = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400";
+                  if (isFlag) cls = "bg-amber-500 text-white";
+                  else if (isAns) cls = "bg-indigo-600 text-white";
+                  if (isCurr) cls += " ring-2 ring-emerald-400 ring-offset-2 dark:ring-offset-slate-900";
+                  return `
+                    <button onclick="goExamQuestion(${i})" class="h-9 rounded-lg text-xs font-extrabold transition ${cls}">
+                      ${i + 1}
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+              <div class="flex flex-wrap gap-3 mt-4 text-[11px] text-slate-500">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-indigo-600 inline-block"></span> Respondida</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span> Dudosa</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-slate-300 dark:bg-slate-700 inline-block"></span> Sin responder</span>
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <button onclick="submitMockExam()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition shadow-md">
+                Finalizar y Corregir Examen
+              </button>
+              <button onclick="exitMockExam()" class="w-full py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-rose-500 transition">
+                Abandonar simulacro
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectExamOption(idx) {
+      examState.userAnswers[examState.currentIndex] = idx;
+      renderExamArena();
+    }
+
+    function toggleFlagExamQuestion() {
+      examState.flagged[examState.currentIndex] = !examState.flagged[examState.currentIndex];
+      renderExamArena();
+    }
+
+    function goExamQuestion(idx) {
+      if (idx >= 0 && idx < 30) {
+        examState.currentIndex = idx;
+        renderExamArena();
+      }
+    }
+
+    function exitMockExam() {
+      if (examState.timerInterval) clearInterval(examState.timerInterval);
+      document.getElementById("exam-arena").classList.add("hidden");
+      document.getElementById("exam-lobby").classList.remove("hidden");
+    }
+
+    function submitMockExam() {
+      if (examState.timerInterval) clearInterval(examState.timerInterval);
+      examState.submitted = true;
+
+      let hits = 0;
+      examState.questions.forEach((q, idx) => {
+        const ans = examState.userAnswers[idx];
+        if (ans === q.correctIndex) {
+          hits++;
+          if (!appState.masteredQuestions.includes(q.id)) appState.masteredQuestions.push(q.id);
+          const fIdx = appState.failedQuestions.indexOf(q.id);
+          if (fIdx !== -1) appState.failedQuestions.splice(fIdx, 1);
+        } else {
+          if (!appState.failedQuestions.includes(q.id)) appState.failedQuestions.push(q.id);
+        }
+      });
+
+      const finalGrade = (hits / 30) * 10;
+      if (typeof examState.modelId === "number") {
+        const prev = appState.examScores[examState.modelId] || 0;
+        if (finalGrade > prev) appState.examScores[examState.modelId] = finalGrade;
+      }
+      saveState();
+      renderExamResults();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderExamResults() {
+      const arena = document.getElementById("exam-arena");
+      const { questions, userAnswers } = examState;
+
+      let hits = 0;
+      let blanks = 0;
+      const byTopic = {};
+
+      questions.forEach((q, i) => {
+        if (!byTopic[q.topic]) byTopic[q.topic] = { total: 0, hits: 0 };
+        byTopic[q.topic].total++;
+
+        const ans = userAnswers[i];
+        if (ans === null) blanks++;
+        if (ans === q.correctIndex) {
+          hits++;
+          byTopic[q.topic].hits++;
+        }
+      });
+
+      const wrong = 30 - hits - blanks;
+      const grade = ((hits / 30) * 10).toFixed(2);
+      const passed = parseFloat(grade) >= 5;
+
+      arena.innerHTML = `
+        <div class="space-y-6 animate-fade-in">
+          <!-- Tarjeta de Nota y Diagnóstico -->
+          <div class="bg-white dark:bg-slate-900 border-2 ${passed ? 'border-emerald-500/40' : 'border-rose-500/40'} rounded-2xl p-6 sm:p-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <span class="px-3 py-1 rounded-full text-xs font-extrabold ${passed ? 'bg-emerald-500/15 text-emerald-500' : 'bg-rose-500/15 text-rose-500'}">
+                  ${passed ? '✅ EXAMEN APROBADO' : '⚠️ NECESITA REPASO'}
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Calificación: ${grade} / 10</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  Aciertos: <strong class="text-emerald-500">${hits}</strong> · Fallos: <strong class="text-rose-500">${wrong}</strong> · En blanco: <strong>${blanks}</strong>
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-3">
+                <button onclick="exitMockExam()" class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">
+                  Volver a Exámenes
+                </button>
+              </div>
+            </div>
+
+            <!-- Desglose por puntos para saber qué repasar -->
+            <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Diagnóstico por Puntos del Temario</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                ${Object.keys(byTopic).sort().map(tCode => {
+                  const d = byTopic[tCode];
+                  const ratio = d.hits / d.total;
+                  const color = ratio >= 0.7 ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500" : ratio >= 0.5 ? "border-amber-500/40 bg-amber-500/10 text-amber-500" : "border-rose-500/40 bg-rose-500/10 text-rose-500";
+                  return `
+                    <div class="p-3 rounded-xl border ${color} text-center">
+                      <div class="text-xs font-extrabold">${tCode}</div>
+                      <div class="text-base font-black mt-0.5">${d.hits}/${d.total}</div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
+
+          <!-- Revisión detallada de las 30 preguntas -->
+          <div class="space-y-4">
+            <h3 class="text-xl font-extrabold">Revisión Completa de las 30 Preguntas</h3>
+            ${questions.map((q, idx) => {
+              const ans = userAnswers[idx];
+              const isOk = ans === q.correctIndex;
+              const letters = ["A", "B", "C", "D"];
+              return `
+                <div class="bg-white dark:bg-slate-900 border ${isOk ? 'border-emerald-500/30' : 'border-rose-500/40'} rounded-2xl p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold ${isOk ? 'text-emerald-500' : 'text-rose-500'}">
+                      ${isOk ? '✅' : '❌'} Pregunta ${idx + 1} · ${q.topic}
+                    </span>
+                    <span class="text-xs text-slate-400">${ans === null ? 'Sin responder' : 'Respondida'}</span>
+                  </div>
+                  <p class="font-bold text-sm sm:text-base">${q.q}</p>
+                  <div class="space-y-1.5 text-xs sm:text-sm">
+                    ${q.shuffledOptions.map((opt, oIdx) => {
+                      let badge = "text-slate-600 dark:text-slate-400";
+                      let prefix = "";
+                      if (oIdx === q.correctIndex) {
+                        badge = "text-emerald-600 dark:text-emerald-400 font-bold";
+                        prefix = "✓ ";
+                      } else if (oIdx === ans) {
+                        badge = "text-rose-600 dark:text-rose-400 line-through";
+                        prefix = "✗ ";
+                      }
+                      return `<div class="${badge}">${prefix}<strong>${letters[oIdx]})</strong> ${opt.text}</div>`;
+                    }).join("")}
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/70 text-xs text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-800">
+                    <strong>Explicación:</strong> ${q.exp}
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 9. REPASO EXPRESS: FLASHCARDS Y GLOSARIO
+    // =========================================================================
+    let fcState = {
+      filter: "ALL",
+      cards: [...FLASHCARDS_DATA],
+      index: 0,
+      flipped: false
+    };
+
+    function switchExtraSub(subName) {
+      ["flashcards", "comparativas", "glosario"].forEach(name => {
+        document.getElementById(`extra-${name}`).classList.toggle("hidden", name !== subName);
+        const btn = document.getElementById(`sub-btn-${name}`);
+        btn.className = name === subName
+          ? "extra-sub-btn px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white"
+          : "extra-sub-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800";
+      });
+      if (subName === "glosario") renderGlossary();
+    }
+
+    function filterFlashcards(unit) {
+      fcState.filter = unit;
+      fcState.cards = unit === "ALL" ? [...FLASHCARDS_DATA] : FLASHCARDS_DATA.filter(c => c.unit === unit);
+      fcState.index = 0;
+      fcState.flipped = false;
+
+      ["ALL", "U5", "U6"].forEach(u => {
+        const b = document.getElementById(`fc-filter-${u}`);
+        b.className = u === unit
+          ? "fc-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white"
+          : "fc-filter px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800";
+      });
+      renderFlashcard();
+    }
+
+    function renderFlashcard() {
+      const card = fcState.cards[fcState.index];
+      if (!card) return;
+      document.getElementById("fc-counter").textContent = `Tarjeta ${fcState.index + 1} de ${fcState.cards.length}`;
+      const tagEl = document.getElementById("fc-tag");
+      tagEl.textContent = card.unit === "U5" ? "Unidad 5" : "Unidad 6";
+      tagEl.className = card.unit === "U5"
+        ? "px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 font-bold"
+        : "px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-bold";
+
+      document.getElementById("fc-front-text").textContent = card.front;
+      document.getElementById("fc-back-text").textContent = card.back;
+
+      const inner = document.getElementById("flashcard-inner");
+      if (fcState.flipped) inner.classList.add("rotate-y-180");
+      else inner.classList.remove("rotate-y-180");
+    }
+
+    function flipFlashcard() {
+      fcState.flipped = !fcState.flipped;
+      renderFlashcard();
+    }
+
+    function nextFlashcard() {
+      fcState.flipped = false;
+      fcState.index = (fcState.index + 1) % fcState.cards.length;
+      renderFlashcard();
+    }
+
+    function prevFlashcard() {
+      fcState.flipped = false;
+      fcState.index = (fcState.index - 1 + fcState.cards.length) % fcState.cards.length;
+      renderFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      fcState.cards = shuffleArray(fcState.cards);
+      fcState.index = 0;
+      fcState.flipped = false;
+      renderFlashcard();
+      showToast("Tarjetas mezcladas 🔀");
+    }
+
+    function renderGlossary() {
+      const query = (document.getElementById("glossary-search")?.value || "").toLowerCase().trim();
+      const list = document.getElementById("glossary-list");
+      const filtered = GLOSSARY_DATA.filter(item =>
+        item.term.toLowerCase().includes(query) || item.def.toLowerCase().includes(query) || item.unit.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<p class="text-sm text-slate-500 col-span-2 py-4 text-center">No se encontraron términos con "${query}".</p>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(item => `
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-extrabold text-sm text-indigo-600 dark:text-indigo-400">${item.term}</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800">${item.unit}</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${item.def}</p>
+        </div>
+      `).join("");
+    }
+
+    // =========================================================================
+    // 10. SECCIÓN MIS FALLOS (REPASO AUTOMÁTICO)
+    // =========================================================================
+    function renderFallosSection() {
+      const container = document.getElementById("fallos-content");
+      const actions = document.getElementById("fallos-actions");
+      const failedObjs = QUESTIONS_BANK.filter(q => appState.failedQuestions.includes(q.id));
+
+      if (failedObjs.length === 0) {
+        actions.innerHTML = "";
+        container.innerHTML = `
+          <div class="text-center py-12 px-4 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border border-dashed border-slate-300 dark:border-slate-800">
+            <div class="text-4xl mb-3">🌟</div>
+            <h3 class="text-lg font-extrabold">¡No tienes preguntas falladas pendientes!</h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1">
+              Haz algún test por puntos o un simulacro de 30 preguntas. Si fallas alguna, aparecerá aquí automáticamente para que la repases.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      actions.innerHTML = `
+        <button onclick="practiceAllFailed()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-bold transition shadow-sm">
+          🎯 Practicar estas ${failedObjs.length} preguntas
+        </button>
+      `;
+
+      container.innerHTML = `
+        <div class="space-y-3">
+          ${failedObjs.map(q => `
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-rose-500/25 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-rose-500">${q.topic}</span>
+                <button onclick="removeSingleFailed('${q.id}')" class="text-xs text-slate-400 hover:text-emerald-500 font-semibold">Marcar como aprendida ✓</button>
+              </div>
+              <p class="font-bold text-sm sm:text-base">${q.q}</p>
+              <p class="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-semibold">
+                ✓ Respuesta correcta: ${q.options[q.answer]}
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">${q.exp}</p>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function practiceAllFailed() {
+      const failedObjs = QUESTIONS_BANK.filter(q => appState.failedQuestions.includes(q.id));
+      switchTab("tests");
+      startTopicQuiz("FAILED_REVIEW", shuffleArray(failedObjs));
+    }
+
+    function removeSingleFailed(qId) {
+      appState.failedQuestions = appState.failedQuestions.filter(id => id !== qId);
+      if (!appState.masteredQuestions.includes(qId)) appState.masteredQuestions.push(qId);
+      saveState();
+      renderFallosSection();
+      showToast("Pregunta marcada como dominada ✓", "success");
+    }
+
+    // =========================================================================
+    // 11. INICIALIZACIÓN AL CARGAR LA PÁGINA
+    // =========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      renderTemario();
+      renderFlashcard();
+      renderGlossary();
+      switchTab("temario");
+    });
+  </script>
+</body>
+</html>
